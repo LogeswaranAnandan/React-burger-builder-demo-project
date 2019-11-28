@@ -1,24 +1,91 @@
 import React, { Component } from 'react';
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
-import Burger from '../../components/Burger/Burger';
-import { IBurgerBuilderState } from '../../interface/StateInterface';
+import Burger from '../../components/Burger/BurgerImage/BurgerImage';
+import BuildControls from '../../components/Burger/BuildControls/BuildControls';
+import Constants from '../../constants/constants';
+import { Ingredients, RemovableIngredients } from '../../models/Interface';
+import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
+import Modal from '../../components/UI/Modal/Modal';
+
+interface IBurgerBuilderState {
+    ingredients: Ingredients,
+    isRemovableIngredient: RemovableIngredients
+    burgerPrice: number,
+    showOrderConfirmationModal: boolean
+}
 
 class BurgerBuilder extends Component<any, IBurgerBuilderState> {
-    
-    state = {
-        ingredients: {
-            salad: 1,
-            bacon: 2,
-            cheese: 2,
-            meat: 1
+
+    INGREDIENTS_COST = Constants.INGREDIENTS_COST;
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            ingredients: {
+                salad: 0,
+                bacon: 0,
+                cheese: 0,
+                meat: 0
+            },
+            isRemovableIngredient: {
+                salad: false,
+                bacon: false,
+                cheese: false,
+                meat: false
+            },
+            burgerPrice: 40,
+            showOrderConfirmationModal: false
         }
+    }
+
+    addIngredientHandler = (ingredientName: string) => {
+        const ingredientCount = this.state.ingredients[ingredientName];
+        let updatedState = { ...this.state };
+        updatedState.ingredients[ingredientName] = ingredientCount + 1;
+        updatedState.burgerPrice = updatedState.burgerPrice + this.INGREDIENTS_COST[ingredientName];
+        if (ingredientCount === 0) {
+            updatedState.isRemovableIngredient[ingredientName] = true;
+        }
+        this.setState(updatedState);
+    }
+
+    removeIngredientHandler = (ingredientName: string) => {
+        const ingredientCount = this.state.ingredients[ingredientName];
+        let updatedState = { ...this.state };
+        if (ingredientCount > 0) {
+            updatedState.ingredients[ingredientName] = ingredientCount - 1;
+            updatedState.burgerPrice = updatedState.burgerPrice - this.INGREDIENTS_COST[ingredientName];
+            if (ingredientCount === 1) {
+                updatedState.isRemovableIngredient[ingredientName] = false;
+            }
+            this.setState(updatedState);
+        }
+    }
+
+    orderButtonClickedHandler = () => {
+        this.setState({
+            showOrderConfirmationModal: true
+        })
     }
 
     render() {
         return (
             <Auxiliary>
-                <Burger ingredients={this.state.ingredients}/>
-                <div>Build controls</div>
+                <Burger
+                    ingredients={this.state.ingredients}
+                />
+                <BuildControls
+                    addIngredientHandler={this.addIngredientHandler}
+                    removeIngredientHandler={this.removeIngredientHandler}
+                    orderButtonClickedHandler={this.orderButtonClickedHandler}
+                    isRemovableIngredient={this.state.isRemovableIngredient}
+                    burgerPrice={this.state.burgerPrice}
+                />
+                <Modal show={this.state.showOrderConfirmationModal}>
+                    <OrderSummary
+                        ingredients={this.state.ingredients}
+                    />
+                </Modal>
             </Auxiliary>
         );
     }
