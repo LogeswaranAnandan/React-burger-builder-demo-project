@@ -1,8 +1,13 @@
 import React from 'react'
 import { Ingredients } from '../../../models/Interface'
+import Button from '../../UI/Button/Button';
+import ButtonClasses from '../../UI/Button/Button.module.css';
 
 interface IProps {
-    ingredients: Ingredients
+    ingredients: Ingredients,
+    totalAmount: number,
+    continueCheckoutHandler(): void,
+    cancelCheckoutHandler(): void
 }
 
 const OrderSummary = (props: IProps) => {
@@ -20,8 +25,11 @@ const OrderSummary = (props: IProps) => {
             <ul>
                 {listItems}
             </ul>
+            <div style={{margin: '10px 0px'}}>Total Price: <strong><i>{props.totalAmount} INR</i></strong></div>
             <div>
-                Do you want to continue?
+                <div><strong>Do you want to continue?</strong></div>
+                <Button type={ButtonClasses.Success} handler={props.continueCheckoutHandler}>Continue</Button>
+                <Button type={ButtonClasses.Danger} handler={props.cancelCheckoutHandler}>Cancel</Button>
             </div>
         </div>
     );

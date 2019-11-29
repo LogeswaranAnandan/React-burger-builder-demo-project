@@ -6,6 +6,7 @@ import Constants from '../../constants/constants';
 import { Ingredients, RemovableIngredients } from '../../models/Interface';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Modal from '../../components/UI/Modal/Modal';
+import * as lodash from 'lodash';
 
 interface IBurgerBuilderState {
     ingredients: Ingredients,
@@ -14,28 +15,31 @@ interface IBurgerBuilderState {
     showOrderConfirmationModal: boolean
 }
 
+const initialBurgerBuilderState = {
+    ingredients: {
+        salad: 0,
+        bacon: 0,
+        cheese: 0,
+        meat: 0
+    },
+    isRemovableIngredient: {
+        salad: false,
+        bacon: false,
+        cheese: false,
+        meat: false
+    },
+    burgerPrice: 40,
+    showOrderConfirmationModal: false
+};
+
 class BurgerBuilder extends Component<any, IBurgerBuilderState> {
 
     INGREDIENTS_COST = Constants.INGREDIENTS_COST;
+    
 
     constructor(props) {
         super(props);
-        this.state = {
-            ingredients: {
-                salad: 0,
-                bacon: 0,
-                cheese: 0,
-                meat: 0
-            },
-            isRemovableIngredient: {
-                salad: false,
-                bacon: false,
-                cheese: false,
-                meat: false
-            },
-            burgerPrice: 40,
-            showOrderConfirmationModal: false
-        }
+        this.state = lodash.cloneDeep(initialBurgerBuilderState);
     }
 
     addIngredientHandler = (ingredientName: string) => {
@@ -68,6 +72,18 @@ class BurgerBuilder extends Component<any, IBurgerBuilderState> {
         })
     }
 
+    orderSummaryConfirmationHandler = () => {
+        alert('Your order is confirmed');
+        this.setState(lodash.cloneDeep(initialBurgerBuilderState));
+    }
+
+    closeOrderSummaryModalHandler = () => {
+        this.setState({
+            showOrderConfirmationModal: false
+        });
+    }
+
+
     render() {
         return (
             <Auxiliary>
@@ -81,9 +97,15 @@ class BurgerBuilder extends Component<any, IBurgerBuilderState> {
                     isRemovableIngredient={this.state.isRemovableIngredient}
                     burgerPrice={this.state.burgerPrice}
                 />
-                <Modal show={this.state.showOrderConfirmationModal}>
+                <Modal
+                    show={this.state.showOrderConfirmationModal}
+                    closeModalHandler={this.closeOrderSummaryModalHandler}
+                >
                     <OrderSummary
                         ingredients={this.state.ingredients}
+                        totalAmount={this.state.burgerPrice}
+                        continueCheckoutHandler={this.orderSummaryConfirmationHandler}
+                        cancelCheckoutHandler={this.closeOrderSummaryModalHandler}
                     />
                 </Modal>
             </Auxiliary>
