@@ -1,0 +1,22 @@
+.SideDrawer {
+    position: fixed;
+    z-index: 200;
+    width: 70%;
+    height: 100vh;
+    background-color: #fff;
+    transition: transform 0.4s ease-out;
+}
+
+.Logo {
+    height: 60px;
+    width: 80px;
+    margin: 20px auto;
+}
+
+.Open {
+    transform: translateX(0);
+}
+
+.Close {
+    transform: translateX(-100vw);
+}

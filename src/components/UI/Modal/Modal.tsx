@@ -1,6 +1,7 @@
 import React from 'react'
 import classes from './Modal.module.css';
 import Backdrop from '../Backdrop/Backdrop';
+import Auxiliary from '../../../hoc/Auxiliary/Auxiliary';
 
 interface IProps {
     show: boolean,
@@ -10,7 +11,8 @@ interface IProps {
 
 const Modal = (props: IProps) => {
     return (
-        <Backdrop show={props.show} closeModalHandler={props.closeModalHandler}>
+        <Auxiliary>
+            <Backdrop show={props.show} closeBackdropHandler={props.closeModalHandler} />
             <div
                 className={classes.Modal}
                 style={{
@@ -20,7 +22,7 @@ const Modal = (props: IProps) => {
             >
                 {props.children}
             </div>
-        </Backdrop>
+        </Auxiliary>
     )
 }
 
