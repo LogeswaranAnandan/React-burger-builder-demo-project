@@ -7,6 +7,7 @@ import { Ingredients, RemovableIngredients } from '../../models/Interface';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Modal from '../../components/UI/Modal/Modal';
 import * as lodash from 'lodash';
+import HttpUtilService, { RequestMethods } from '../../core/HttpUtil/HttpUtilService';
 
 interface IBurgerBuilderState {
     ingredients: Ingredients,
@@ -35,14 +36,22 @@ const initialBurgerBuilderState = {
 class BurgerBuilder extends Component<any, IBurgerBuilderState> {
 
     INGREDIENTS_COST = Constants.INGREDIENTS_COST;
-    
 
     constructor(props) {
         super(props);
         this.state = lodash.cloneDeep(initialBurgerBuilderState);
     }
 
+    componentDidMount() {
+        this.makeRequest();
+    }
+
+    async makeRequest() {
+        const res = await HttpUtilService.makeRequest('/Ingredients.json', RequestMethods.GET);
+    }
+
     addIngredientHandler = (ingredientName: string) => {
+        this.makeRequest();
         const ingredientCount = this.state.ingredients[ingredientName];
         let updatedState = { ...this.state };
         updatedState.ingredients[ingredientName] = ingredientCount + 1;
@@ -54,6 +63,7 @@ class BurgerBuilder extends Component<any, IBurgerBuilderState> {
     }
 
     removeIngredientHandler = (ingredientName: string) => {
+        this.makeRequest();
         const ingredientCount = this.state.ingredients[ingredientName];
         let updatedState = { ...this.state };
         if (ingredientCount > 0) {

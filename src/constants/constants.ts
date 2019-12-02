@@ -1,4 +1,8 @@
 export default class Constants {
+
+    public static BACKEND_BASE_URL = 'https://burger-builder-3e20f.firebaseio.com/';
+    public static SPINNER_EVENT_NAME = 'Spinner';
+
     public static MEAT = 'meat';
     public static CHEESE = 'cheese';
     public static SALAD = 'salad';
