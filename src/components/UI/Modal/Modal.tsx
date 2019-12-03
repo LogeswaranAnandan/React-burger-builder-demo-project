@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { ReactNode } from 'react'
 import classes from './Modal.module.css';
 import Backdrop from '../Backdrop/Backdrop';
 import Auxiliary from '../../../hoc/Auxiliary/Auxiliary';
@@ -6,7 +6,7 @@ import Auxiliary from '../../../hoc/Auxiliary/Auxiliary';
 interface IProps {
     show: boolean,
     closeModalHandler(): void,
-    children: any
+    children: ReactNode
 }
 
 const Modal = (props: IProps) => {

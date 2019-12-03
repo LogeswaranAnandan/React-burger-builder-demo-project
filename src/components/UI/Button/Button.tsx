@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { ReactNode } from 'react';
 import classes from './Button.module.css';
 
 interface IProps {
     type: string,
     handler(): void,
-    children: any
+    children: ReactNode
 }
 
 const Button = (props: IProps) => {

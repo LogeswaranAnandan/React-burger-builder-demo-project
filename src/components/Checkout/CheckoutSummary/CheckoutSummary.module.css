@@ -1,0 +1,17 @@
+.CheckoutSummaryContainer {
+    width: 80%;
+    padding: 10px;
+    margin: 10px auto;
+    text-align: center;
+}
+
+.ButtonContainer {
+    display: flex;
+    justify-content: center;
+}
+
+@media (min-width: 600px) {
+    .CheckoutSummaryContainer {
+        width: 500px;
+    }
+}

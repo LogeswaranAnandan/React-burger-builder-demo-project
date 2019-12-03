@@ -7,7 +7,7 @@ interface IProps {
     ingredients: Ingredients
 }
 
-const Burger = (props: IProps) => {
+const BurgerImage = (props: IProps) => {
     let finalIngredientsArray = [];
     const ingredientKeys: string[] = Object.keys(props.ingredients);
     ingredientKeys.forEach(key => {
@@ -31,4 +31,4 @@ const Burger = (props: IProps) => {
     )
 }
 
-export default Burger;
+export default BurgerImage;
