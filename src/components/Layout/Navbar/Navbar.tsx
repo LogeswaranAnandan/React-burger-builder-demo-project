@@ -9,7 +9,7 @@ interface IProps {
 
 const Navbar = (props: IProps) => {
     return (
-        <div className={classes.Navbar}>
+        <header className={classes.Navbar}>
             <div className={classes.DrawerToggle} onClick={props.toggleNavbarHandler}>
                 <div></div>
                 <div></div>
@@ -21,7 +21,7 @@ const Navbar = (props: IProps) => {
             <nav className={classes.DesktopOnly}>
                 <NavItems/>
             </nav>
-        </div>
+        </header>
     );
 }
 

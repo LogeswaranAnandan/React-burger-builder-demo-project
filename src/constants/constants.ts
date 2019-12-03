@@ -18,4 +18,6 @@ export default class Constants {
         cheese: 15,
         meat: 20
     }
+
+    public static GET_ORDERS_URL = '/Orders.json';
 }
