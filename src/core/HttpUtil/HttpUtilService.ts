@@ -36,18 +36,15 @@ export default class HttpUtilService {
 
         // Showing the spinner component
         if (!hideSpinner) {
-            console.log('emitting INCREMENT', this.count);
             this.httpCountEvenEmitter.emit(Constants.SPINNER_EVENT_NAME,++this.count);
         }
         try {
             const response: any = await axios.request(httpRequestConfig)
                 .then(res => {
-                    console.log('emitting DECREMENT', this.count);
                     this.httpCountEvenEmitter.emit(Constants.SPINNER_EVENT_NAME,--this.count);
                     return res
                 })
                 .catch(err => {
-                    console.log('emitting DECREMENT', this.count);
                     this.httpCountEvenEmitter.emit(Constants.SPINNER_EVENT_NAME,--this.count);
                     Promise.reject(err);
                 })

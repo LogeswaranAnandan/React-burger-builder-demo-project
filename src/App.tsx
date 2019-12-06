@@ -1,17 +1,17 @@
 import React from 'react';
 import './App.css';
 import Auxiliary from './hoc/Auxiliary/Auxiliary';
-import BurgerBuilder from './containers/BurgerBuilder/BurgerBuilder';
 import Layout from './containers/Layout/Layout';
 import Spinner from './containers/UI/Spinner/Spinner';
+import { BrowserRouter } from 'react-router-dom';
 
 const App = () => {
   return (
     <Auxiliary>
-      <Layout>
-        <BurgerBuilder></BurgerBuilder>
-      </Layout>
-      <Spinner />
+      <BrowserRouter>
+        <Layout />
+        <Spinner />
+      </BrowserRouter>
     </Auxiliary>
   );
 }

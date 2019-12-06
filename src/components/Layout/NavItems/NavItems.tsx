@@ -1,21 +1,27 @@
 import React from 'react';
 import classes from './NavItems.module.css';
+import { NavLink } from 'react-router-dom';
 
 const NavItems = () => {
-    const navHeaders = ['Dashboard', 'Summary'];
-    let navItems: any[] = [];
-
-    navHeaders.forEach((nav) => {
-        navItems.push((
-            <li className={classes.NavItem} key={nav}>
-                <a href="/">{nav}</a>
-            </li>
-        ))
-    });
-
     return (
         <ul className={classes.NavItemContainer}>
-            {navItems}
+            <li className={classes.NavItem}>
+                <NavLink
+                    to="/"
+                    exact
+                    activeClassName={classes.active}
+                >
+                    Dashboard
+                </NavLink>
+            </li>
+            <li className={classes.NavItem}>
+                <NavLink
+                    to="/orders"
+                    activeClassName={classes.active}
+                >
+                    Orders
+                </NavLink>
+            </li>
         </ul>
     );
 }

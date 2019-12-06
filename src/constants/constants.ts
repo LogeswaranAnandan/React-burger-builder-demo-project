@@ -18,4 +18,25 @@ export default class Constants {
         cheese: 15,
         meat: 20
     }
+
+    public static GET_ORDERS_URL = '/Orders.json';
+
+
+    public static INPUT_TYPE = {
+        INPUT: 'input',
+        SELECT: 'select'
+    }
+
+    public static VALIDATION_RULES = {
+        REQUIRED: 'required',
+        MIN_LENGTH: 'minLength',
+        MAX_LENGTH: 'maxLength'
+    }
+
+    public static ERROR_MESSAGE = {
+        REQUIRED: 'This field is required.',
+        MIN_LENGTH: 'This field should contain minimum of 4 characters.',
+        MAX_LENGTH: 'This field should contain maximum of 6 characters.'
+    }
+
 }

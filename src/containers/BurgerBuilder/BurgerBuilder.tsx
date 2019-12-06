@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
-import Burger from '../../components/Burger/BurgerImage/BurgerImage';
+import BurgerImage from '../../components/Burger/BurgerImage/BurgerImage';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Constants from '../../constants/constants';
 import { Ingredients, RemovableIngredients } from '../../models/Interface';
@@ -8,6 +8,7 @@ import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Modal from '../../components/UI/Modal/Modal';
 import * as lodash from 'lodash';
 import HttpUtilService, { RequestMethods } from '../../core/HttpUtil/HttpUtilService';
+import { RouteComponentProps } from 'react-router';
 
 interface IBurgerBuilderState {
     ingredients: Ingredients,
@@ -17,12 +18,7 @@ interface IBurgerBuilderState {
 }
 
 const initialBurgerBuilderState = {
-    ingredients: {
-        salad: 0,
-        bacon: 0,
-        cheese: 0,
-        meat: 0
-    },
+    ingredients: {},
     isRemovableIngredient: {
         salad: false,
         bacon: false,
@@ -33,7 +29,7 @@ const initialBurgerBuilderState = {
     showOrderConfirmationModal: false
 };
 
-class BurgerBuilder extends Component<any, IBurgerBuilderState> {
+class BurgerBuilder extends Component<RouteComponentProps, IBurgerBuilderState> {
 
     INGREDIENTS_COST = Constants.INGREDIENTS_COST;
 
@@ -42,16 +38,29 @@ class BurgerBuilder extends Component<any, IBurgerBuilderState> {
         this.state = lodash.cloneDeep(initialBurgerBuilderState);
     }
 
-    componentDidMount() {
-        this.makeRequest();
+    async componentDidMount() {
+        const ingredients = await this.getIngredients();
+        initialBurgerBuilderState.ingredients = ingredients;
+        this.setState({ingredients: lodash.cloneDeep(ingredients)});
     }
 
-    async makeRequest() {
-        const res = await HttpUtilService.makeRequest('/Ingredients.json', RequestMethods.GET);
+    async getIngredients() {
+        const ingredients = await HttpUtilService.makeRequest('/Ingredients.json', RequestMethods.GET);
+        
+        // To get the response in the order of salad, bacon, cheese and meat. So that the UI looks nice.
+        const finalIngredients: Ingredients = {
+            salad: null,
+            bacon: null,
+            cheese: null,
+            meat: null
+        }
+        Object.keys(ingredients).forEach((key) => {
+            finalIngredients[key] = ingredients[key];
+        });
+        return finalIngredients;
     }
 
     addIngredientHandler = (ingredientName: string) => {
-        this.makeRequest();
         const ingredientCount = this.state.ingredients[ingredientName];
         let updatedState = { ...this.state };
         updatedState.ingredients[ingredientName] = ingredientCount + 1;
@@ -63,7 +72,6 @@ class BurgerBuilder extends Component<any, IBurgerBuilderState> {
     }
 
     removeIngredientHandler = (ingredientName: string) => {
-        this.makeRequest();
         const ingredientCount = this.state.ingredients[ingredientName];
         let updatedState = { ...this.state };
         if (ingredientCount > 0) {
@@ -82,9 +90,16 @@ class BurgerBuilder extends Component<any, IBurgerBuilderState> {
         })
     }
 
-    orderSummaryConfirmationHandler = () => {
-        alert('Your order is confirmed');
-        this.setState(lodash.cloneDeep(initialBurgerBuilderState));
+    orderSummaryConfirmationHandler = async () => {
+        let queryParamArray: string[] = [];
+        for (let ing in this.state.ingredients) {
+            queryParamArray.push(encodeURIComponent(`${ing}=${this.state.ingredients[ing]}`));
+        }
+        queryParamArray.push(encodeURIComponent(`price=${this.state.burgerPrice}`));
+        this.props.history.push({
+            pathname: '/checkout',
+            search: '?' + queryParamArray.join('&')
+        });
     }
 
     closeOrderSummaryModalHandler = () => {
@@ -95,31 +110,35 @@ class BurgerBuilder extends Component<any, IBurgerBuilderState> {
 
 
     render() {
-        return (
-            <Auxiliary>
-                <Burger
-                    ingredients={this.state.ingredients}
-                />
-                <BuildControls
-                    addIngredientHandler={this.addIngredientHandler}
-                    removeIngredientHandler={this.removeIngredientHandler}
-                    orderButtonClickedHandler={this.orderButtonClickedHandler}
-                    isRemovableIngredient={this.state.isRemovableIngredient}
-                    burgerPrice={this.state.burgerPrice}
-                />
-                <Modal
-                    show={this.state.showOrderConfirmationModal}
-                    closeModalHandler={this.closeOrderSummaryModalHandler}
-                >
-                    <OrderSummary
+        let render = null;
+        if (this.state) {
+            render = (
+                <Auxiliary>
+                    <BurgerImage
                         ingredients={this.state.ingredients}
-                        totalAmount={this.state.burgerPrice}
-                        continueCheckoutHandler={this.orderSummaryConfirmationHandler}
-                        cancelCheckoutHandler={this.closeOrderSummaryModalHandler}
                     />
-                </Modal>
-            </Auxiliary>
-        );
+                    <BuildControls
+                        addIngredientHandler={this.addIngredientHandler}
+                        removeIngredientHandler={this.removeIngredientHandler}
+                        orderButtonClickedHandler={this.orderButtonClickedHandler}
+                        isRemovableIngredient={this.state.isRemovableIngredient}
+                        burgerPrice={this.state.burgerPrice}
+                    />
+                    <Modal
+                        show={this.state.showOrderConfirmationModal}
+                        closeModalHandler={this.closeOrderSummaryModalHandler}
+                    >
+                        <OrderSummary
+                            ingredients={this.state.ingredients}
+                            totalAmount={this.state.burgerPrice}
+                            continueCheckoutHandler={this.orderSummaryConfirmationHandler}
+                            cancelCheckoutHandler={this.closeOrderSummaryModalHandler}
+                        />
+                    </Modal>
+                </Auxiliary>
+            );
+        }
+        return render;
     }
 
 }
