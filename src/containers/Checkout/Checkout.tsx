@@ -1,9 +1,5 @@
 import React, { Component } from 'react';
-import BurgerImage from '../../components/Burger/BurgerImage/BurgerImage';
 import { Ingredients } from '../../models/Interface';
-import Button from '../../components/UI/Button/Button';
-import ButtonClasses from '../../components/UI/Button/Button.module.css';
-import classes from './Checkout.module.css';
 import { RouteComponentProps, Route } from 'react-router';
 import ContactData from './ContactData/ContactData';
 import CheckoutSummary from '../../components/Checkout/CheckoutSummary/CheckoutSummary';
@@ -15,7 +11,7 @@ interface IState {
 
 class Checkout extends Component<RouteComponentProps, IState> {
 
-    constructor(props) {
+    constructor(props: RouteComponentProps) {
         super(props);
         let ingredients: Ingredients = {} as any;
         let price: number = 0;
