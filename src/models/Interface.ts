@@ -11,3 +11,9 @@ export interface RemovableIngredients {
     cheese: boolean,
     meat: boolean
 }
+
+export interface IReduxState {
+    ingredients: Ingredients,
+    isRemovableIngredient: RemovableIngredients
+    burgerPrice: number
+}

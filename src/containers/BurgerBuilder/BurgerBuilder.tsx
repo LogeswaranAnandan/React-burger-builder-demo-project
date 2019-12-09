@@ -3,50 +3,37 @@ import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
 import BurgerImage from '../../components/Burger/BurgerImage/BurgerImage';
 import BuildControls from '../../components/Burger/BuildControls/BuildControls';
 import Constants from '../../constants/constants';
-import { Ingredients, RemovableIngredients } from '../../models/Interface';
+import { Ingredients, IReduxState } from '../../models/Interface';
 import OrderSummary from '../../components/Burger/OrderSummary/OrderSummary';
 import Modal from '../../components/UI/Modal/Modal';
-import * as lodash from 'lodash';
 import HttpUtilService, { RequestMethods } from '../../core/HttpUtil/HttpUtilService';
 import { RouteComponentProps } from 'react-router';
+import { connect } from 'react-redux';
 
 interface IBurgerBuilderState {
-    ingredients: Ingredients,
-    isRemovableIngredient: RemovableIngredients
-    burgerPrice: number,
     showOrderConfirmationModal: boolean
 }
 
-const initialBurgerBuilderState = {
-    ingredients: {},
-    isRemovableIngredient: {
-        salad: false,
-        bacon: false,
-        cheese: false,
-        meat: false
-    },
-    burgerPrice: 40,
-    showOrderConfirmationModal: false
-};
+interface IProps extends IReduxState, RouteComponentProps {
+    addIngredientHandler(ingredientName: string): () => void,
+    removeIngredientHandler(ingredientName: string): () => void
+}
 
-class BurgerBuilder extends Component<RouteComponentProps, IBurgerBuilderState> {
+class BurgerBuilder extends Component<IProps, IBurgerBuilderState> {
 
-    INGREDIENTS_COST = Constants.INGREDIENTS_COST;
-
-    constructor(props) {
-        super(props);
-        this.state = lodash.cloneDeep(initialBurgerBuilderState);
+    state: IBurgerBuilderState = {
+        showOrderConfirmationModal: false
     }
 
     async componentDidMount() {
-        const ingredients = await this.getIngredients();
-        initialBurgerBuilderState.ingredients = ingredients;
-        this.setState({ingredients: lodash.cloneDeep(ingredients)});
+        // const ingredients = await this.getIngredients();
+        // initialBurgerBuilderState.ingredients = ingredients;
+        // this.setState({ ingredients: lodash.cloneDeep(ingredients) });
     }
 
     async getIngredients() {
         const ingredients = await HttpUtilService.makeRequest('/Ingredients.json', RequestMethods.GET);
-        
+
         // To get the response in the order of salad, bacon, cheese and meat. So that the UI looks nice.
         const finalIngredients: Ingredients = {
             salad: null,
@@ -60,46 +47,35 @@ class BurgerBuilder extends Component<RouteComponentProps, IBurgerBuilderState> 
         return finalIngredients;
     }
 
-    addIngredientHandler = (ingredientName: string) => {
-        const ingredientCount = this.state.ingredients[ingredientName];
-        let updatedState = { ...this.state };
-        updatedState.ingredients[ingredientName] = ingredientCount + 1;
-        updatedState.burgerPrice = updatedState.burgerPrice + this.INGREDIENTS_COST[ingredientName];
-        if (ingredientCount === 0) {
-            updatedState.isRemovableIngredient[ingredientName] = true;
-        }
-        this.setState(updatedState);
-    }
-
-    removeIngredientHandler = (ingredientName: string) => {
-        const ingredientCount = this.state.ingredients[ingredientName];
-        let updatedState = { ...this.state };
-        if (ingredientCount > 0) {
-            updatedState.ingredients[ingredientName] = ingredientCount - 1;
-            updatedState.burgerPrice = updatedState.burgerPrice - this.INGREDIENTS_COST[ingredientName];
-            if (ingredientCount === 1) {
-                updatedState.isRemovableIngredient[ingredientName] = false;
-            }
-            this.setState(updatedState);
-        }
-    }
-
     orderButtonClickedHandler = () => {
         this.setState({
             showOrderConfirmationModal: true
         })
     }
 
-    orderSummaryConfirmationHandler = async () => {
+    /* orderSummaryConfirmationHandler = async () => {
         let queryParamArray: string[] = [];
-        for (let ing in this.state.ingredients) {
-            queryParamArray.push(encodeURIComponent(`${ing}=${this.state.ingredients[ing]}`));
+        for (let ing in this.props.ingredients) {
+            queryParamArray.push(encodeURIComponent(`${ing}=${this.props.ingredients[ing]}`));
         }
-        queryParamArray.push(encodeURIComponent(`price=${this.state.burgerPrice}`));
+        queryParamArray.push(encodeURIComponent(`price=${this.props.burgerPrice}`));
         this.props.history.push({
             pathname: '/checkout',
             search: '?' + queryParamArray.join('&')
         });
+    } */
+
+    orderSummaryConfirmationHandler = async () => {
+        // let queryParamArray: string[] = [];
+        // for (let ing in this.props.ingredients) {
+        //     queryParamArray.push(encodeURIComponent(`${ing}=${this.props.ingredients[ing]}`));
+        // }
+        // queryParamArray.push(encodeURIComponent(`price=${this.props.burgerPrice}`));
+        // this.props.history.push({
+        //     pathname: '/checkout',
+        //     search: '?' + queryParamArray.join('&')
+        // });
+        this.props.history.push('/checkout');
     }
 
     closeOrderSummaryModalHandler = () => {
@@ -111,36 +87,55 @@ class BurgerBuilder extends Component<RouteComponentProps, IBurgerBuilderState> 
 
     render() {
         let render = null;
-        if (this.state) {
-            render = (
-                <Auxiliary>
-                    <BurgerImage
-                        ingredients={this.state.ingredients}
+        render = (
+            <Auxiliary>
+                <BurgerImage
+                    ingredients={this.props.ingredients}
+                />
+                <BuildControls
+                    addIngredientHandler={this.props.addIngredientHandler}
+                    removeIngredientHandler={this.props.removeIngredientHandler}
+                    orderButtonClickedHandler={this.orderButtonClickedHandler}
+                    isRemovableIngredient={this.props.isRemovableIngredient}
+                    burgerPrice={this.props.burgerPrice}
+                />
+                <Modal
+                    show={this.state.showOrderConfirmationModal}
+                    closeModalHandler={this.closeOrderSummaryModalHandler}
+                >
+                    <OrderSummary
+                        ingredients={this.props.ingredients}
+                        totalAmount={this.props.burgerPrice}
+                        continueCheckoutHandler={this.orderSummaryConfirmationHandler}
+                        cancelCheckoutHandler={this.closeOrderSummaryModalHandler}
                     />
-                    <BuildControls
-                        addIngredientHandler={this.addIngredientHandler}
-                        removeIngredientHandler={this.removeIngredientHandler}
-                        orderButtonClickedHandler={this.orderButtonClickedHandler}
-                        isRemovableIngredient={this.state.isRemovableIngredient}
-                        burgerPrice={this.state.burgerPrice}
-                    />
-                    <Modal
-                        show={this.state.showOrderConfirmationModal}
-                        closeModalHandler={this.closeOrderSummaryModalHandler}
-                    >
-                        <OrderSummary
-                            ingredients={this.state.ingredients}
-                            totalAmount={this.state.burgerPrice}
-                            continueCheckoutHandler={this.orderSummaryConfirmationHandler}
-                            cancelCheckoutHandler={this.closeOrderSummaryModalHandler}
-                        />
-                    </Modal>
-                </Auxiliary>
-            );
-        }
+                </Modal>
+            </Auxiliary>
+        );
         return render;
     }
 
 }
 
-export default BurgerBuilder;
+const mapStateToProps = (reduxState: IReduxState) => {
+    return reduxState;
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        addIngredientHandler: (ingredientName: string) => dispatch({
+            type: Constants.DISPATCH_NAME.ADD_INGREDIENT,
+            payload: {
+                ingredientName: ingredientName
+            }
+        }),
+        removeIngredientHandler: (ingredientName: string) => dispatch({
+            type: Constants.DISPATCH_NAME.REMOVE_INGREDIENT,
+            payload: {
+                ingredientName: ingredientName
+            }
+        })
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(BurgerBuilder);
