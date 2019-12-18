@@ -1,27 +1,22 @@
 import React, { Component } from "react";
-import HttpUtilService, { RequestMethods } from "../../core/HttpUtil/HttpUtilService";
-import Constants from "../../constants/constants";
 import Order from "../../components/Orders/Order/Order";
+import { IReduxState } from "../../models/Interface";
+import { connect } from "react-redux";
+import OrderActions from "../../redux/action-creators/OrderActions";
 
-class Orders extends Component {
+interface IProps {
+    orders: any[],
+    fetchOrders: () => void
+}
 
-    state = {
-        orders: []
-    }
+class Orders extends Component<IProps, {}> {
 
     async componentDidMount() {
-        let orders = [];
-        const unstructuredOrders = await HttpUtilService.makeRequest(Constants.GET_ORDERS_URL, RequestMethods.GET)
-        console.log('orders', unstructuredOrders);
-        for (let key in unstructuredOrders) {
-            orders.push({ ...unstructuredOrders[key], id: key });
-        }
-        console.log('o', orders);
-        this.setState({ orders: orders });
+        this.props.fetchOrders();
     }
 
     render() {
-        let orders = this.state.orders.map((order) => {
+        let orders = this.props.orders.map((order) => {
             return (
                 <Order
                     ingredients={order.ingredients}
@@ -38,4 +33,14 @@ class Orders extends Component {
     }
 }
 
-export default Orders;
+const mapStateToProps = (reduxState: IReduxState) => {
+    return reduxState.ordersState
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        fetchOrders: () => dispatch(OrderActions.fetchOrdersAsync())
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Orders);

@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import classes from './ContactData.module.css';
-import HttpUtilService, { RequestMethods } from '../../../core/HttpUtil/HttpUtilService';
-import { Ingredients } from '../../../models/Interface';
+import { Ingredients, IReduxState } from '../../../models/Interface';
 import { withRouter, RouterProps } from 'react-router';
 import Button from '../../../components/UI/Button/Button';
 import ButtonClasses from '../../../components/UI/Button/Button.module.css';
 import Constants from '../../../constants/constants';
 import Input from '../../../components/UI/Input/Input';
+import { connect, DispatchProp } from 'react-redux';
+import OrderActions from '../../../redux/action-creators/OrderActions';
 
-interface IProps extends RouterProps {
+interface IProps extends RouterProps, DispatchProp {
     ingredients: Ingredients,
-    price: number
+    price: number,
+    orders?: any[],
+    onOrderSubmit?: (orderData, history) => void
 }
 interface IState {
     contactForm: {
@@ -226,19 +229,17 @@ class ContactData extends Component<IProps, IState> {
         event.preventDefault();
 
         let contactInfo = {};
-
         for (let key in this.state.contactForm) {
             contactInfo[key] = this.state.contactForm[key].value;
         }
-
 
         const requestBody = {
             ingredients: this.props.ingredients,
             price: this.props.price,
             contactInfo: contactInfo
         }
-        await HttpUtilService.makeRequest('/Orders.json', RequestMethods.POST, requestBody);
-        this.props.history.push("/");
+
+        this.props.onOrderSubmit(requestBody, this.props.history);
     }
 
     render() {
@@ -277,4 +278,16 @@ class ContactData extends Component<IProps, IState> {
 
 }
 
-export default withRouter(ContactData);
+const mapStateToProps = (reduxState: IReduxState) => {
+    return {
+        orders: reduxState.ordersState.orders
+    }
+}
+
+const mapDispatchToProps = (dispatch) => {
+    return {
+        onOrderSubmit: (orderData, routeHistory) => dispatch(OrderActions.placeOrderAsync(orderData, routeHistory))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ContactData));

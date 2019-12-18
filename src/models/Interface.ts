@@ -13,7 +13,21 @@ export interface RemovableIngredients {
 }
 
 export interface IReduxState {
+    burgerBuilderState: IReduxBurgerBuilderState,
+    ordersState: IReduxOrdersState
+}
+
+export interface IReduxBurgerBuilderState {
     ingredients: Ingredients,
     isRemovableIngredient: RemovableIngredients
     burgerPrice: number
+}
+
+export interface IReduxOrdersState {
+    orders: any[]
+}
+
+export interface ActionType {
+    type: string,
+    payload: any
 }

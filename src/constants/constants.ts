@@ -39,9 +39,4 @@ export default class Constants {
         MAX_LENGTH: 'This field should contain maximum of 6 characters.'
     }
 
-    public static DISPATCH_NAME = {
-        ADD_INGREDIENT: 'ADD_INGREDIENT',
-        REMOVE_INGREDIENT: 'REMOVE_INGREDIENT'
-    }
-
 }
