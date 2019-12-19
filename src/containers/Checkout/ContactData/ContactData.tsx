@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import classes from './ContactData.module.css';
-import { Ingredients, IReduxState } from '../../../models/Interface';
+import { Ingredients, IReduxState, InputFieldType, ValidationRules } from '../../../models/Interface';
 import { withRouter, RouterProps } from 'react-router';
 import Button from '../../../components/UI/Button/Button';
 import ButtonClasses from '../../../components/UI/Button/Button.module.css';
@@ -8,6 +8,8 @@ import Constants from '../../../constants/constants';
 import Input from '../../../components/UI/Input/Input';
 import { connect, DispatchProp } from 'react-redux';
 import OrderActions from '../../../redux/action-creators/OrderActions';
+import updateObject from '../../../util/update-object';
+import checkFieldValidity from '../../../util/check-validity';
 
 interface IProps extends RouterProps, DispatchProp {
     ingredients: Ingredients,
@@ -25,27 +27,6 @@ interface IState {
         deliveryMethod: InputFieldType
     },
     isValid: boolean
-}
-
-interface InputFieldType {
-    inputType: string,
-    label: string,
-    htmlProperties: {
-        type?: 'text' | 'password' | 'email' | 'number',
-        placeholder?: string,
-        options?: { displayName: string, value: any }[]
-    },
-    value: any,
-    validationRules: ValidationRules
-    isValid: boolean,
-    isTouched: boolean,
-    errorMessage: string
-}
-
-interface ValidationRules {
-    required?: boolean,
-    minLength?: number,
-    maxLength?: number
 }
 
 class ContactData extends Component<IProps, IState> {
@@ -166,63 +147,37 @@ class ContactData extends Component<IProps, IState> {
     inputChangedHandler = (inputName: string, event) => {
         const updatedFieldValue = event.target.value;
         let isFormValid = true;
+        let isValid = null;
+        let errorMessage = checkFieldValidity(this.state.contactForm[inputName].validationRules, updatedFieldValue);
 
-        let updatedContactForm = { ...this.state.contactForm };
-        let updatedInputField: InputFieldType = { ...updatedContactForm[inputName] };
-        updatedInputField.value = updatedFieldValue;
-        const errorMessage = this.checkFieldValidity(updatedInputField.validationRules, updatedFieldValue);
         if (!errorMessage) {
-            updatedInputField.isValid = true;
-            for (let key in updatedContactForm) {
-                if (key !== inputName && !updatedContactForm[key].isValid) {
+            isValid = true;
+            for (let key in this.state.contactForm) {
+                if (key !== inputName && !this.state.contactForm[key].isValid) {
                     isFormValid = false;
                     break;
                 }
             }
         } else {
-            updatedInputField.isValid = false;
-            updatedInputField.errorMessage = errorMessage;
+            isValid = false;
+            errorMessage = errorMessage;
             isFormValid = false;
         }
-        updatedContactForm[inputName] = updatedInputField;
+
+        const updatedInputField = updateObject(this.state.contactForm[inputName] as InputFieldType, {
+            value: updatedFieldValue,
+            isValid: isValid,
+            errorMessage: errorMessage
+        } as InputFieldType);
+
+        const updatedContactForm = updateObject(this.state.contactForm, {
+            [inputName]: updatedInputField
+        });
+
         this.setState({
             contactForm: updatedContactForm,
             isValid: isFormValid
         });
-    }
-
-    checkFieldValidity(rules: ValidationRules, value: string) {
-        // let isValid = true;
-        let errorMessage = null;
-        for (let rule in rules) {
-            if (!errorMessage) {
-                switch (rule) {
-                    case Constants.VALIDATION_RULES.REQUIRED:
-                        if (value.toString().trim() === '') {
-                            // isValid = false;
-                            errorMessage = Constants.ERROR_MESSAGE.REQUIRED
-                        }
-                        break;
-                    case Constants.VALIDATION_RULES.MIN_LENGTH:
-                        if (value.toString().trim().length < rules[rule]) {
-                            // isValid = false;
-                            errorMessage = Constants.ERROR_MESSAGE.MIN_LENGTH
-                        }
-                        break;
-                    case Constants.VALIDATION_RULES.MAX_LENGTH:
-                        if (value.toString().trim().length > rules[rule]) {
-                            // isValid = false;
-                            errorMessage = Constants.ERROR_MESSAGE.MAX_LENGTH
-                        }
-                        break;
-                    default:
-                        // isValid = false;
-                        errorMessage = Constants.ERROR_MESSAGE.REQUIRED
-                        break;
-                }
-            }
-        }
-        return errorMessage;
     }
 
     submitOrder = async (event?: any) => {

@@ -31,3 +31,26 @@ export interface ActionType {
     type: string,
     payload: any
 }
+
+
+
+export interface InputFieldType {
+    inputType: string,
+    label: string,
+    htmlProperties: {
+        type?: 'text' | 'password' | 'email' | 'number',
+        placeholder?: string,
+        options?: { displayName: string, value: any }[]
+    },
+    value: any,
+    validationRules: ValidationRules
+    isValid: boolean,
+    isTouched: boolean,
+    errorMessage: string
+}
+
+export interface ValidationRules {
+    required?: boolean,
+    minLength?: number,
+    maxLength?: number
+}
