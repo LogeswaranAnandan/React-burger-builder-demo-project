@@ -14,7 +14,8 @@ export interface RemovableIngredients {
 
 export interface IReduxState {
     burgerBuilderState: IReduxBurgerBuilderState,
-    ordersState: IReduxOrdersState
+    ordersState: IReduxOrdersState,
+    authState: IReduxAuthState
 }
 
 export interface IReduxBurgerBuilderState {
@@ -27,9 +28,15 @@ export interface IReduxOrdersState {
     orders: any[]
 }
 
+export interface IReduxAuthState {
+    isAuthenticated: boolean,
+    authToken: string,
+    redirectPath: string
+}
+
 export interface ActionType {
     type: string,
-    payload: any
+    payload?: any
 }
 
 

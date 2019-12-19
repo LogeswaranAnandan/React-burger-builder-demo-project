@@ -8,15 +8,18 @@ import Modal from '../../components/UI/Modal/Modal';
 import { RouteComponentProps } from 'react-router';
 import { connect } from 'react-redux';
 import BurgerBuilderAction from '../../redux/action-creators/BurgerBuilderActions';
+import AuthActions from '../../redux/action-creators/AuthActions';
 
 interface IBurgerBuilderState {
     showOrderConfirmationModal: boolean
 }
 
 interface IProps extends IReduxBurgerBuilderState, RouteComponentProps {
+    isAuthenticated: boolean,
     addIngredientHandler(ingredientName: string): void,
     removeIngredientHandler(ingredientName: string): void,
-    initIngredients(): void
+    initIngredients(): void,
+    setRedirectPath(redirectPath: string): void
 }
 
 class BurgerBuilder extends Component<IProps, IBurgerBuilderState> {
@@ -32,9 +35,14 @@ class BurgerBuilder extends Component<IProps, IBurgerBuilderState> {
     }
 
     orderButtonClickedHandler = () => {
-        this.setState({
-            showOrderConfirmationModal: true
-        })
+        if (this.props.isAuthenticated) {
+            this.setState({
+                showOrderConfirmationModal: true
+            })
+        } else {
+            this.props.setRedirectPath("/auth");
+            this.props.history.push("/auth")
+        }
     }
 
     orderSummaryConfirmationHandler = async () => {
@@ -62,6 +70,7 @@ class BurgerBuilder extends Component<IProps, IBurgerBuilderState> {
                         orderButtonClickedHandler={this.orderButtonClickedHandler}
                         isRemovableIngredient={this.props.isRemovableIngredient}
                         burgerPrice={this.props.burgerPrice}
+                        isAuthenticated={this.props.isAuthenticated}
                     />
                     <Modal
                         show={this.state.showOrderConfirmationModal}
@@ -83,14 +92,18 @@ class BurgerBuilder extends Component<IProps, IBurgerBuilderState> {
 }
 
 const mapStateToProps = (reduxState: IReduxState) => {
-    return reduxState.burgerBuilderState;
+    return {
+        ...reduxState.burgerBuilderState,
+        isAuthenticated: reduxState.authState.isAuthenticated
+    }
 }
 
 const mapDispatchToProps = (dispatch) => {
     return {
         addIngredientHandler: (ingredientName: string) => dispatch(BurgerBuilderAction.addIngredient(ingredientName)),
         removeIngredientHandler: (ingredientName: string) => dispatch(BurgerBuilderAction.removeIngredient(ingredientName)),
-        initIngredients: () => dispatch(BurgerBuilderAction.initIngredientsAsync())
+        initIngredients: () => dispatch(BurgerBuilderAction.initIngredientsAsync()),
+        setRedirectPath: (redirectPath: string) => dispatch(AuthActions.setRedirectPath(redirectPath))
     }
 }
 

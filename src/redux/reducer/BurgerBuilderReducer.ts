@@ -16,7 +16,7 @@ const initialState: IReduxBurgerBuilderState = {
 
 const INGREDIENTS_COST = Constants.INGREDIENTS_COST;
 
-const reducer = (prevState = initialState, action: ActionType) => {
+const burgerBuilderReducer = (prevState = initialState, action: ActionType) => {
     const clonedPrevState = lodash.cloneDeep(prevState);
     switch (action.type) {
         case ActionTypes.ADD_INGREDIENT:
@@ -69,4 +69,4 @@ const placeOrderSuccess = (updatedState: IReduxBurgerBuilderState) => {
     return updatedState;
 }
 
-export default reducer;
+export default burgerBuilderReducer;

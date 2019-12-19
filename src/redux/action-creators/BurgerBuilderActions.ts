@@ -37,7 +37,7 @@ export default class BurgerBuilderAction {
                 });
                 dispatch(BurgerBuilderAction.initIngredients(finalIngredients));
             } catch (err) {
-                
+                console.log('ERR_INIT_INGREDIENTS', err);
             }
         }
     }

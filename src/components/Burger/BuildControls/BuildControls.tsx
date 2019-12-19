@@ -9,7 +9,8 @@ interface IProps {
     removeIngredientHandler(ingredientName: string): void,
     isRemovableIngredient: RemovableIngredients,
     burgerPrice: number,
-    orderButtonClickedHandler(): void
+    orderButtonClickedHandler: () => void,
+    isAuthenticated: boolean
 }
 
 const BuildControls = (props: IProps) => {
@@ -33,7 +34,9 @@ const BuildControls = (props: IProps) => {
                 Current Price: <strong>{props.burgerPrice}</strong>
             </div>
             {jsxBuildControlArray}
-            <button className={classes.OrderButton} disabled={props.burgerPrice === 40} onClick={() => props.orderButtonClickedHandler()}>Order Now</button>
+            <button className={classes.OrderButton} disabled={props.burgerPrice === 40} onClick={props.orderButtonClickedHandler}>
+                {props.isAuthenticated ? 'Order Now' : 'Sign in to Checkout'}
+            </button>
         </div>
     );
 }

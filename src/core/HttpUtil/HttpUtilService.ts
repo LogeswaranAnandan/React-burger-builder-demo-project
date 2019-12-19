@@ -71,6 +71,60 @@ export default class HttpUtilService {
         }
     }
 
+    static async makeRequestToExternalUrl(requestUrl: string, requestMethod: RequestMethods,
+        requestBody?: any, hideSpinner?: boolean) {
+        // let params = new HttpParams();
+
+        // requestHeaders = requestHeaders || new HttpHeaders();
+        // if (!requestHeaders.get('Content-Type')) {
+        //     requestHeaders = requestHeaders.append('Content-Type', 'application/json');
+        // }
+        let httpRequestConfig: AxiosRequestConfig = {
+            method: requestMethod,
+            url: requestUrl
+        };
+        if (requestBody) {
+            httpRequestConfig.data = requestBody;
+        }
+        console.debug(`HTTP REQUEST : `, httpRequestConfig);
+
+        // Showing the spinner component
+        if (!hideSpinner) {
+            this.httpCountEvenEmitter.emit(Constants.SPINNER_EVENT_NAME,++this.count);
+        }
+        try {
+            const response: any = await axios.request(httpRequestConfig)
+                .then(res => {
+                    this.httpCountEvenEmitter.emit(Constants.SPINNER_EVENT_NAME,--this.count);
+                    return res
+                })
+                .catch(err => {
+                    this.httpCountEvenEmitter.emit(Constants.SPINNER_EVENT_NAME,--this.count);
+                    Promise.reject(err);
+                })
+            console.debug(`Response: `, response);
+
+            // Hiding the spinner component
+            // if (!hideSpinner) {
+            //     this.spinnerService.hideSpinner();
+            // }
+
+            if (response.data) {
+                return response.data;
+            } else {
+                return Promise.reject(response);
+            }
+        } catch (err) {
+            // Hiding the spinner component
+            // if (!hideSpinner) {
+            //     this.spinnerService.hideSpinner();
+            // }
+
+            const errorResponse: AppError = this.handleHttpError(err);
+            return Promise.reject(errorResponse);
+        }
+    }
+
     private static handleHttpError(err: any): AppError {
         if (err.status === 400) {
             return this.handleError('ERR_BAD_REQUEST', 'Bad request format to server');

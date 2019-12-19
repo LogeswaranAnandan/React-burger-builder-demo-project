@@ -2,6 +2,7 @@ export default class Constants {
 
     public static BACKEND_BASE_URL = 'https://burger-builder-3e20f.firebaseio.com/';
     public static SPINNER_EVENT_NAME = 'Spinner';
+    public static AUTH_TOKEN_KEY = 'AUTH_TOKEN_KEY';
 
     public static MEAT = 'meat';
     public static CHEESE = 'cheese';
@@ -9,6 +10,9 @@ export default class Constants {
     public static BACON = 'bacon';
     public static BREAD_TOP = 'bread-top';
     public static BREAD_BOTTOM = 'bread-bottom';
+
+    public static LOGIN_PAGE = 'Login';
+    public static SIGNUP_PAGE = 'Signup'
 
     public static AVAILABLE_INGREDIENTS = [Constants.SALAD, Constants.BACON, Constants.CHEESE, Constants.MEAT];
 

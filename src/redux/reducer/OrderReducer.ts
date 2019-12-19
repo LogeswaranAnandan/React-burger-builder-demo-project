@@ -5,7 +5,7 @@ const initialState: IReduxOrdersState = {
     orders: []
 };
 
-const reducer = (prevState = initialState, action: ActionType) => {
+const orderReducer = (prevState = initialState, action: ActionType) => {
     switch(action.type) {
         case ActionTypes.FETCH_ORDER_SUCCESS: return fetchOrdersSuccess(prevState, action);
         default:
@@ -19,4 +19,4 @@ const fetchOrdersSuccess = (prevState: IReduxOrdersState, action: ActionType): I
     }
 }
 
-export default reducer;
+export default orderReducer;

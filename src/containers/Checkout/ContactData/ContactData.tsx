@@ -135,10 +135,12 @@ class ContactData extends Component<IProps, IState> {
     }
 
     markInputAsTouched = (inputName: string, event) => {
-        let updatedContactForm = { ...this.state.contactForm };
-        let updatedInputField: InputFieldType = { ...updatedContactForm[inputName] };
-        updatedInputField.isTouched = true;
-        updatedContactForm[inputName] = updatedInputField;
+        const updatedContactForm = updateObject(this.state.contactForm, {
+            [inputName]: updateObject(this.state.contactForm[inputName], {
+                    isTouched: true
+                } as InputFieldType)
+        });
+
         this.setState({
             contactForm: updatedContactForm
         });
