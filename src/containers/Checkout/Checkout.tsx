@@ -4,6 +4,7 @@ import { RouteComponentProps, Route, Redirect } from 'react-router';
 import ContactData from './ContactData/ContactData';
 import CheckoutSummary from '../../components/Checkout/CheckoutSummary/CheckoutSummary';
 import { connect } from 'react-redux';
+import Constants from '../../constants/constants';
 
 interface IProps extends IReduxBurgerBuilderState, RouteComponentProps {
 }
@@ -11,7 +12,7 @@ interface IProps extends IReduxBurgerBuilderState, RouteComponentProps {
 class Checkout extends Component<IProps, {}> {
 
     goToContactDataPage = () => {
-        this.props.history.push(this.props.match.url + "/contact-data");
+        this.props.history.push(this.props.match.url + Constants.URL.CONTACT_DATA_PAGE);
     }
 
     goToBurgerBuilderPage = () => {
@@ -20,7 +21,7 @@ class Checkout extends Component<IProps, {}> {
 
     render() {
         let renderContent = (
-            <Redirect to="/" />
+            <Redirect to={Constants.URL.LANDING_PAGE} />
         )
         if (this.props.ingredients) {
             renderContent = (
@@ -32,7 +33,7 @@ class Checkout extends Component<IProps, {}> {
                         cancelHandler={this.goToBurgerBuilderPage}
                     />
                     <Route
-                        path={this.props.match.url + "/contact-data"}
+                        path={this.props.match.url + Constants.URL.CONTACT_DATA_PAGE}
                         render={() => <ContactData ingredients={this.props.ingredients} price={this.props.burgerPrice} />}
                     />
                 </div>

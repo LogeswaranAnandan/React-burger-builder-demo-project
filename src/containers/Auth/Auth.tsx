@@ -88,7 +88,6 @@ class Auth extends Component<IProps, IState> {
             }
         } else {
             isValid = false;
-            errorMessage = errorMessage;
             isFormValid = false;
         }
 
@@ -181,7 +180,7 @@ class Auth extends Component<IProps, IState> {
 
     componentDidMount() {
         if (this.props.isAuthenticated) {
-            this.props.history.replace("/");
+            this.props.history.replace(Constants.URL.LANDING_PAGE);
         }
     }
 

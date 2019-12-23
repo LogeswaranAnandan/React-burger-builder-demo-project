@@ -9,6 +9,7 @@ import { RouteComponentProps } from 'react-router';
 import { connect } from 'react-redux';
 import BurgerBuilderAction from '../../redux/action-creators/BurgerBuilderActions';
 import AuthActions from '../../redux/action-creators/AuthActions';
+import Constants from '../../constants/constants';
 
 interface IBurgerBuilderState {
     showOrderConfirmationModal: boolean
@@ -40,13 +41,13 @@ class BurgerBuilder extends Component<IProps, IBurgerBuilderState> {
                 showOrderConfirmationModal: true
             })
         } else {
-            this.props.setRedirectPath("/auth");
-            this.props.history.push("/auth")
+            this.props.setRedirectPath(Constants.URL.CHECKOUT_PAGE);
+            this.props.history.push(Constants.URL.LOGIN_PAGE);
         }
     }
 
     orderSummaryConfirmationHandler = async () => {
-        this.props.history.push('/checkout');
+        this.props.history.push(Constants.URL.CHECKOUT_PAGE);
     }
 
     closeOrderSummaryModalHandler = () => {

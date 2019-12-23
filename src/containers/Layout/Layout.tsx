@@ -10,6 +10,9 @@ import classes from './Layout.module.css';
 import Auth from '../Auth/Auth';
 import { IReduxState } from '../../models/Interface';
 import { connect } from 'react-redux';
+import AuthContext from '../../context/auth-context';
+import Logout from '../Auth/Logout/Logout';
+import Constants from '../../constants/constants';
 
 interface IProps {
     isAuthenticated: boolean
@@ -36,30 +39,33 @@ class Layout extends Component<IProps, IState> {
     render() {
         let routes = (
             <Switch>
-                <Route path="/auth" component={Auth} />
-                <Route path="/" exact component={BurgerBuilder} />
-                <Redirect to="/" />
+                <Route path={Constants.URL.LOGIN_PAGE} component={Auth} />
+                <Route path={Constants.URL.BURGER_BUILDER_PAGE} exact component={BurgerBuilder} />
+                <Redirect to={Constants.URL.LANDING_PAGE} />
             </Switch>
         );
 
         if (this.props.isAuthenticated) {
             routes = (
                 <Switch>
-                    <Route path="/checkout" component={Checkout} />
-                    <Route path="/orders" component={Orders} />
-                    <Route path="/" exact component={BurgerBuilder} />
-                    <Redirect to="/" />
+                    <Route path={Constants.URL.CHECKOUT_PAGE} component={Checkout} />
+                    <Route path={Constants.URL.ORDERS_PAGE} component={Orders} />
+                    <Route path={Constants.URL.LOGOUT_PAGE} component={Logout} />
+                    <Route path={Constants.URL.BURGER_BUILDER_PAGE} component={BurgerBuilder} />
+                    <Redirect to={Constants.URL.LANDING_PAGE} />
                 </Switch>
             );
         }
 
         return (
             <Auxiliary>
-                <SideDrawer show={this.state.showSideDrawer} closeSideDrawerHandler={this.closeSideDrawerHandler} />
-                <Navbar toggleNavbarHandler={this.toggleNavbarHandler} />
-                <div className={classes.PageContainer}>
-                    {routes}
-                </div>
+                <AuthContext.Provider value={{isAuthenticated: this.props.isAuthenticated}}>
+                    <SideDrawer show={this.state.showSideDrawer} closeSideDrawerHandler={this.closeSideDrawerHandler} />
+                    <Navbar toggleNavbarHandler={this.toggleNavbarHandler} />
+                    <div className={classes.PageContainer}>
+                        {routes}
+                    </div>
+                </AuthContext.Provider>
             </Auxiliary>
         )
     }

@@ -1,7 +1,6 @@
-import HttpUtilService, { RequestMethods } from "../../core/HttpUtil/HttpUtilService";
 import ActionTypes from "../../constants/ActionTypes";
-import Constants from "../../constants/constants";
 import { ActionType } from "../../models/Interface";
+import TokenUtil from "../../util/token-util";
 
 export default class AuthActions {
 
@@ -13,7 +12,7 @@ export default class AuthActions {
 
         return (dispatch) => {
             setTimeout(() => {
-                dispatch(AuthActions.logoutSuccess())
+                dispatch(AuthActions.logout())
             }, Number(loginResponse.expiresIn) * 1000);
             dispatch(loginSuccessAction);
         }
@@ -27,20 +26,45 @@ export default class AuthActions {
 
         return (dispatch) => {
             setTimeout(() => {
-                dispatch(AuthActions.logoutSuccess())
+                dispatch(AuthActions.logout())
             }, Number(signupResponse.expiresIn) * 1000);
+            dispatch(signupSuccessAction);
         }
     }
 
-    public static logoutSuccess = (): ActionType => {
+    public static logout = (): ActionType => {
         return {
             type: ActionTypes.LOGOUT_SUCCESS
         }
     }
 
-    public static onLoadTokenCheck = (): ActionType => {
-        return {
-            type: ActionTypes.ONLOAD_AUTH_TOKEN_CHECK
+    public static onLoadTokenCheck = () => {
+
+        const updateStateWithAuthInfoOnLoadAction = (authToken): ActionType => {
+            return {
+                type: ActionTypes.UPDATE_STATE_WITH_AUTH_INFO_ON_LOAD,
+                payload: {
+                    authToken: authToken
+                }
+            }
+        }
+
+        return (dispatch) => {
+            let currentAuthToken = TokenUtil.fetchTokenFromLocalStorage();
+            const { expirationTime, issuedAt } = TokenUtil.fetchExpirationTimeFromLocalStorage();
+            if (currentAuthToken != null && expirationTime != null && issuedAt != null) {
+                const timeDifferenceInMilliSeconds = new Date().getTime() - issuedAt.getTime();
+                if (timeDifferenceInMilliSeconds < expirationTime) {
+                    setTimeout(() => {
+                        dispatch(AuthActions.logout());
+                    }, expirationTime - timeDifferenceInMilliSeconds);
+                    dispatch(updateStateWithAuthInfoOnLoadAction(currentAuthToken));
+                } else {
+                    dispatch(AuthActions.logout());
+                }
+            } else {
+                dispatch(AuthActions.logout());
+            }
         }
     }
 

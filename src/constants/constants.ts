@@ -3,6 +3,8 @@ export default class Constants {
     public static BACKEND_BASE_URL = 'https://burger-builder-3e20f.firebaseio.com/';
     public static SPINNER_EVENT_NAME = 'Spinner';
     public static AUTH_TOKEN_KEY = 'AUTH_TOKEN_KEY';
+    public static AUTH_TOKEN_EXPIRATION_KEY = 'AUTH_TOKEN_EXPIRATION_KEY';
+    public static AUTH_TOKEN_ISSUED_DATETIME = 'AUTH_TOKEN_ISSUED_DATETIME';
 
     public static MEAT = 'meat';
     public static CHEESE = 'cheese';
@@ -41,6 +43,16 @@ export default class Constants {
         REQUIRED: 'This field is required.',
         MIN_LENGTH: 'This field should contain minimum of 4 characters.',
         MAX_LENGTH: 'This field should contain maximum of 6 characters.'
+    }
+
+    public static URL = {
+        LANDING_PAGE: '/dashboard',
+        BURGER_BUILDER_PAGE: '/dashboard',
+        CHECKOUT_PAGE: '/checkout',
+        CONTACT_DATA_PAGE: '/contact-data',
+        ORDERS_PAGE: '/orders',
+        LOGIN_PAGE: '/auth',
+        LOGOUT_PAGE: '/logout'
     }
 
 }

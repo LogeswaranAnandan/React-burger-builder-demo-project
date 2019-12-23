@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import classes from './ContactData.module.css';
-import { Ingredients, IReduxState, InputFieldType, ValidationRules } from '../../../models/Interface';
+import { Ingredients, IReduxState, InputFieldType } from '../../../models/Interface';
 import { withRouter, RouterProps } from 'react-router';
 import Button from '../../../components/UI/Button/Button';
 import ButtonClasses from '../../../components/UI/Button/Button.module.css';
@@ -11,12 +11,15 @@ import OrderActions from '../../../redux/action-creators/OrderActions';
 import updateObject from '../../../util/update-object';
 import checkFieldValidity from '../../../util/check-validity';
 
+interface IMappedState {}
+
 interface IProps extends RouterProps, DispatchProp {
     ingredients: Ingredients,
     price: number,
     orders?: any[],
     onOrderSubmit?: (orderData, history) => void
 }
+
 interface IState {
     contactForm: {
         name: InputFieldType,
@@ -162,7 +165,6 @@ class ContactData extends Component<IProps, IState> {
             }
         } else {
             isValid = false;
-            errorMessage = errorMessage;
             isFormValid = false;
         }
 

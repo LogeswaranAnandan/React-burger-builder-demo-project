@@ -24,7 +24,7 @@ export default class OrderActions {
             try {
                 const orderResponse = await HttpUtilService.makeRequest('/Orders.json', RequestMethods.POST, requestBody);
                 dispatch(OrderActions.placeOrderSuccess(orderResponse));
-                routeHistory.push("/")
+                routeHistory.push(Constants.URL.LANDING_PAGE);
             } catch (err) {
                 console.log('ERR: PLACE_ORDER', err);
             }
@@ -36,7 +36,6 @@ export default class OrderActions {
             try {
                 let orders = [];
                 const unstructuredOrders = await HttpUtilService.makeRequest(Constants.GET_ORDERS_URL, RequestMethods.GET)
-                console.log('orders', unstructuredOrders);
                 for (let key in unstructuredOrders) {
                     orders.push({ ...unstructuredOrders[key], id: key });
                 }
