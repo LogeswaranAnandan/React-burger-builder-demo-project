@@ -1,11 +1,8 @@
-import React, { Component } from 'react';
+import React, { Component, Suspense } from 'react';
 import Auxiliary from '../../hoc/Auxiliary/Auxiliary';
 import Navbar from '../../components/Layout/Navbar/Navbar';
 import SideDrawer from '../../components/Layout/SideDrawer/SideDrawer';
-import BurgerBuilder from '../BurgerBuilder/BurgerBuilder';
-import Checkout from '../Checkout/Checkout';
 import { Switch, Route, Redirect } from 'react-router';
-import Orders from '../Orders/Orders';
 import classes from './Layout.module.css';
 import Auth from '../Auth/Auth';
 import { IReduxState } from '../../models/Interface';
@@ -20,6 +17,10 @@ interface IProps {
 interface IState {
     showSideDrawer: boolean
 }
+
+const BurgerBuilder = React.lazy(() => import('../BurgerBuilder/BurgerBuilder'));
+const Checkout = React.lazy(() => import('../Checkout/Checkout'));
+const Orders = React.lazy(() => import('../Orders/Orders'));
 
 class Layout extends Component<IProps, IState> {
 
@@ -63,7 +64,9 @@ class Layout extends Component<IProps, IState> {
                     <SideDrawer show={this.state.showSideDrawer} closeSideDrawerHandler={this.closeSideDrawerHandler} />
                     <Navbar toggleNavbarHandler={this.toggleNavbarHandler} />
                     <div className={classes.PageContainer}>
-                        {routes}
+                        <Suspense fallback={<div>Some problem occurred in the backend. Please try again later!!!</div>}>
+                            {routes}
+                        </Suspense>
                     </div>
                 </AuthContext.Provider>
             </Auxiliary>

@@ -1,13 +1,15 @@
 import React, { Component } from 'react';
 import { IReduxState, IReduxBurgerBuilderState } from '../../models/Interface';
 import { RouteComponentProps, Route, Redirect } from 'react-router';
-import ContactData from './ContactData/ContactData';
+// import ContactData from './ContactData/ContactData';
 import CheckoutSummary from '../../components/Checkout/CheckoutSummary/CheckoutSummary';
 import { connect } from 'react-redux';
 import Constants from '../../constants/constants';
 
 interface IProps extends IReduxBurgerBuilderState, RouteComponentProps {
 }
+
+const ContactData = React.lazy(() => import('./ContactData/ContactData'));
 
 class Checkout extends Component<IProps, {}> {
 
@@ -34,7 +36,7 @@ class Checkout extends Component<IProps, {}> {
                     />
                     <Route
                         path={this.props.match.url + Constants.URL.CONTACT_DATA_PAGE}
-                        render={() => <ContactData ingredients={this.props.ingredients} price={this.props.burgerPrice} />}
+                        component={ContactData}
                     />
                 </div>
             );

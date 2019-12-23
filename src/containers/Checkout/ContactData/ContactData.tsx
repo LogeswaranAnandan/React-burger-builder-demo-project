@@ -11,12 +11,14 @@ import OrderActions from '../../../redux/action-creators/OrderActions';
 import updateObject from '../../../util/update-object';
 import checkFieldValidity from '../../../util/check-validity';
 
-interface IMappedState {}
+interface IMappedProps {
+    ingredients: Ingredients,
+    price: number
+}
 
-interface IProps extends RouterProps, DispatchProp {
+interface IProps extends IMappedProps, RouterProps, DispatchProp {
     ingredients: Ingredients,
     price: number,
-    orders?: any[],
     onOrderSubmit?: (orderData, history) => void
 }
 
@@ -237,9 +239,10 @@ class ContactData extends Component<IProps, IState> {
 
 }
 
-const mapStateToProps = (reduxState: IReduxState) => {
+const mapStateToProps = (reduxState: IReduxState): IMappedProps => {
     return {
-        orders: reduxState.ordersState.orders
+        ingredients: reduxState.burgerBuilderState.ingredients,
+        price: reduxState.burgerBuilderState.burgerPrice
     }
 }
 

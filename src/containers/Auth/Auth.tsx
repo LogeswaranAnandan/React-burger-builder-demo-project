@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import * as lodash from 'lodash';
 import { InputFieldType, IReduxState } from '../../models/Interface';
 import Constants from '../../constants/constants';
 import Input from '../../components/UI/Input/Input';
@@ -30,47 +31,49 @@ interface IState {
     formMode: 'Login' | 'Signup'
 }
 
+const initialState: IState = {
+    authForm: {
+        email: {
+            inputType: Constants.INPUT_TYPE.INPUT,
+            label: 'Email',
+            htmlProperties: {
+                type: 'text',
+                placeholder: 'Your Email',
+            },
+            value: '',
+            validationRules: {
+                required: true
+            },
+            isValid: false,
+            isTouched: false,
+            errorMessage: Constants.ERROR_MESSAGE.REQUIRED
+        },
+        password: {
+            inputType: Constants.INPUT_TYPE.INPUT,
+            label: 'Password',
+            htmlProperties: {
+                type: 'password',
+                placeholder: 'Enter your password',
+            },
+            value: '',
+            validationRules: {
+                required: true,
+                minLength: 4,
+                maxLength: 10
+            },
+            isValid: false,
+            isTouched: false,
+            errorMessage: Constants.ERROR_MESSAGE.REQUIRED
+        }
+    },
+    isAuthFormValid: false,
+    formMode: 'Login'
+}
+
 
 class Auth extends Component<IProps, IState> {
 
-    state: IState = {
-        authForm: {
-            email: {
-                inputType: Constants.INPUT_TYPE.INPUT,
-                label: 'Email',
-                htmlProperties: {
-                    type: 'text',
-                    placeholder: 'Your Email',
-                },
-                value: '',
-                validationRules: {
-                    required: true
-                },
-                isValid: false,
-                isTouched: false,
-                errorMessage: Constants.ERROR_MESSAGE.REQUIRED
-            },
-            password: {
-                inputType: Constants.INPUT_TYPE.INPUT,
-                label: 'Password',
-                htmlProperties: {
-                    type: 'password',
-                    placeholder: 'Enter your password',
-                },
-                value: '',
-                validationRules: {
-                    required: true,
-                    minLength: 4,
-                    maxLength: 10
-                },
-                isValid: false,
-                isTouched: false,
-                errorMessage: Constants.ERROR_MESSAGE.REQUIRED
-            }
-        },
-        isAuthFormValid: false,
-        formMode: 'Login'
-    }
+    state: IState = lodash.cloneDeep(initialState);
 
     inputChangedHandler = (inputName: string, event) => {
         const updatedFieldValue = event.target.value;
@@ -134,11 +137,12 @@ class Auth extends Component<IProps, IState> {
         });
     }
 
-    switchAuthFormMode =() => {
+    switchAuthFormMode = () => {
         const updatedFormMode = this.state.formMode === 'Login' ? 'Signup' : 'Login';
-        this.setState({
+        const updatedState = updateObject(lodash.cloneDeep(initialState), {
             formMode: updatedFormMode
-        });
+        } as IState)
+        this.setState(updatedState);
     }
 
     submitOrder = async (event?: any) => {
@@ -157,22 +161,22 @@ class Auth extends Component<IProps, IState> {
 
         if (this.state.formMode === 'Login') {
             try {
-            const response = await HttpUtilService.makeRequestToExternalUrl(UrlConstants.LOGIN_URL, RequestMethods.POST, formInfo);
-            this.props.onLoginSuccess(response);
-            const redirectPath = this.props.redirectPath;
-            this.props.clearRedirectPath();
-            this.props.history.replace(redirectPath);
-            } catch(err) {
+                const response = await HttpUtilService.makeRequestToExternalUrl(UrlConstants.LOGIN_URL, RequestMethods.POST, formInfo);
+                this.props.onLoginSuccess(response);
+                const redirectPath = this.props.redirectPath;
+                this.props.clearRedirectPath();
+                this.props.history.replace(redirectPath);
+            } catch (err) {
                 console.log('ERR_LOGIN', err);
             }
         } else {
-            try{
-            const response = await HttpUtilService.makeRequestToExternalUrl(UrlConstants.SIGNUP_URL, RequestMethods.POST, formInfo);
-            this.props.onSignupSuccess(response);
-            const redirectPath = this.props.redirectPath;
-            this.props.clearRedirectPath();
-            this.props.history.replace(redirectPath);
-            } catch(err) {
+            try {
+                const response = await HttpUtilService.makeRequestToExternalUrl(UrlConstants.SIGNUP_URL, RequestMethods.POST, formInfo);
+                this.props.onSignupSuccess(response);
+                const redirectPath = this.props.redirectPath;
+                this.props.clearRedirectPath();
+                this.props.history.replace(redirectPath);
+            } catch (err) {
                 console.log('ERR_SIGNUP', err);
             }
         }
