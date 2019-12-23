@@ -1,0 +1,27 @@
+.AuthData {
+    margin: 20px auto;
+    width: 80%;
+    text-align: center;
+    box-shadow: 0 2px 3px #ccc;
+    border: 1px solid #eee;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.AuthHeading {
+    background-color: #703B09;
+    margin: 0;
+    padding-top: 1.33em;
+    padding-bottom: 1.33em;
+    color: #fff;
+}
+
+.Input {
+    display: block;
+}
+
+@media (min-width: 600px) {
+    .AuthData {
+        width: 500px;
+    }
+}
