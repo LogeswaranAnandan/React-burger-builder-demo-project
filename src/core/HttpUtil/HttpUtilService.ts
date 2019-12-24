@@ -36,37 +36,22 @@ export default class HttpUtilService {
 
         // Showing the spinner component
         if (!hideSpinner) {
-            this.httpCountEvenEmitter.emit(Constants.SPINNER_EVENT_NAME,++this.count);
+            this.httpCountEvenEmitter.emit(Constants.SPINNER_EVENT_NAME, ++this.count);
         }
+
         try {
-            const response: any = await axios.request(httpRequestConfig)
-                .then(res => {
-                    this.httpCountEvenEmitter.emit(Constants.SPINNER_EVENT_NAME,--this.count);
-                    return res
-                })
-                .catch(err => {
-                    this.httpCountEvenEmitter.emit(Constants.SPINNER_EVENT_NAME,--this.count);
-                    Promise.reject(err);
-                })
+            const response: any = await axios.request(httpRequestConfig);
             console.debug(`Response: `, response);
-
-            // Hiding the spinner component
-            // if (!hideSpinner) {
-            //     this.spinnerService.hideSpinner();
-            // }
-
+            this.httpCountEvenEmitter.emit(Constants.SPINNER_EVENT_NAME, --this.count);
             if (response.data) {
                 return response.data;
             } else {
                 return Promise.reject(response);
             }
-        } catch (err) {
-            // Hiding the spinner component
-            // if (!hideSpinner) {
-            //     this.spinnerService.hideSpinner();
-            // }
-
-            const errorResponse: AppError = this.handleHttpError(err);
+        } catch (error) {
+            console.debug(`ERROR: `, error.response);
+            this.httpCountEvenEmitter.emit(Constants.SPINNER_EVENT_NAME, --this.count);
+            const errorResponse: AppError = this.handleHttpError(error.response.status);
             return Promise.reject(errorResponse);
         }
     }
@@ -90,51 +75,36 @@ export default class HttpUtilService {
 
         // Showing the spinner component
         if (!hideSpinner) {
-            this.httpCountEvenEmitter.emit(Constants.SPINNER_EVENT_NAME,++this.count);
+            this.httpCountEvenEmitter.emit(Constants.SPINNER_EVENT_NAME, ++this.count);
         }
         try {
-            const response: any = await axios.request(httpRequestConfig)
-                .then(res => {
-                    this.httpCountEvenEmitter.emit(Constants.SPINNER_EVENT_NAME,--this.count);
-                    return res
-                })
-                .catch(err => {
-                    this.httpCountEvenEmitter.emit(Constants.SPINNER_EVENT_NAME,--this.count);
-                    Promise.reject(err);
-                })
+            const response: any = await axios.request(httpRequestConfig);
+            this.httpCountEvenEmitter.emit(Constants.SPINNER_EVENT_NAME, --this.count);
             console.debug(`Response: `, response);
-
-            // Hiding the spinner component
-            // if (!hideSpinner) {
-            //     this.spinnerService.hideSpinner();
-            // }
 
             if (response.data) {
                 return response.data;
             } else {
                 return Promise.reject(response);
             }
-        } catch (err) {
-            // Hiding the spinner component
-            // if (!hideSpinner) {
-            //     this.spinnerService.hideSpinner();
-            // }
-
-            const errorResponse: AppError = this.handleHttpError(err);
+        } catch (error) {
+            console.debug(`ERROR: `, error.response);
+            this.httpCountEvenEmitter.emit(Constants.SPINNER_EVENT_NAME, --this.count);
+            const errorResponse: AppError = this.handleHttpError(error.response);
             return Promise.reject(errorResponse);
         }
     }
 
-    private static handleHttpError(err: any): AppError {
-        if (err.status === 400) {
+    private static handleHttpError(statusCode: number): AppError {
+        if (statusCode === 400) {
             return this.handleError('ERR_BAD_REQUEST', 'Bad request format to server');
-        } else if (err.status === 401) {
+        } else if (statusCode === 401) {
             return this.handleError('ERR_UNAUTHORIZED', 'Unauthorized request');
-        } else if (err.status === 403) {
+        } else if (statusCode === 403) {
             return this.handleError('ERR_FORBIDDEN', 'Forbidden Request');
-        } else if (err.status === 404) {
+        } else if (statusCode === 404) {
             return this.handleError('ERR_PAGE_NOT_FOUND', 'Page Not Found');
-        } else if (err.status === 500) {
+        } else if (statusCode === 500) {
             return this.handleError('ERR_INTERNAL_SERVER_ERROR', 'Internal Server Error');
         } else {
             return this.handleError('ERR_BACK_END_ERROR', 'Error while contacting the Server');

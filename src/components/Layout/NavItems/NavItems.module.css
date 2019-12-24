@@ -8,21 +8,16 @@
     height: 100%;
 }
 
-@media (min-width: 500px) {
-    .NavItemContainer {
-        flex-flow: row;
-    }
-}
-
 .NavItem {
-    margin: 10px 0;
     box-sizing: border-box;
     display: block;
     width: 100%;
 }
 
 .NavItem a {
-    color: #8F5C2C;
+    padding: 10px 30px;
+    color: #000;
+    font-weight: bold;
     text-decoration: none;
     width: 100%;
     box-sizing: border-box;
@@ -32,10 +27,15 @@
 .NavItem a:hover,
 .NavItem a:active,
 .NavItem a.active {
-    color: #40A4C8;
+    color: #fff;
+    background-color: rgb(112, 59, 9, 0.8);
 }
 
 @media (min-width: 500px) {
+    .NavItemContainer {
+        flex-flow: row;
+    }
+
     .NavItem {
         margin: 0;
         display: flex;

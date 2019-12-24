@@ -3,26 +3,32 @@ import HttpUtilService from "../../../core/HttpUtil/HttpUtilService";
 import classes from "./Spinner.module.css";
 import Constants from "../../../constants/constants";
 
+interface IProps {
+    showSpinnerAsFallback?: boolean
+}
+
 interface IState {
     showSpinner: boolean
 }
 
-class Spinner extends Component<{}, IState> {
+class Spinner extends Component<IProps, IState> {
 
     state = {
         showSpinner: false
     }
 
-    constructor(props) {
+    updateSpinnerState = (count: number) => {
+        this.setState({ showSpinner: Number(count) > 0 });
+    };
+
+    constructor(props: IProps) {
         super(props);
-        HttpUtilService.httpCountEvenEmitter.addListener(Constants.SPINNER_EVENT_NAME, (count) => {
-            this.setState({ showSpinner: Number(count) > 0 });
-        });
+        HttpUtilService.httpCountEvenEmitter.addListener(Constants.SPINNER_EVENT_NAME, this.updateSpinnerState);
     }
 
     render() {
         let spinner = null;
-        if (this.state.showSpinner) {
+        if (this.state.showSpinner || this.props.showSpinnerAsFallback) {
             spinner = (
                 <div className={classes.Backdrop}>
                     <div className={classes.Loader}></div>
@@ -32,6 +38,10 @@ class Spinner extends Component<{}, IState> {
         return (
             <div>{spinner}</div>
         );
+    }
+
+    componentWillUnmount() {
+        HttpUtilService.httpCountEvenEmitter.removeListener(Constants.SPINNER_EVENT_NAME, this.updateSpinnerState);
     }
 }
 

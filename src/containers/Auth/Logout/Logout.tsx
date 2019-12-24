@@ -3,9 +3,11 @@ import AuthActions from '../../../redux/action-creators/AuthActions';
 import { RouteComponentProps } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Constants from '../../../constants/constants';
+import OrderActions from '../../../redux/action-creators/OrderActions';
 
 interface IDispatchProps {
-    logout(): void
+    logout(): void,
+    resetBurgerBuilderState(): void
 }
 
 interface IProps extends IDispatchProps, RouteComponentProps {
@@ -19,6 +21,7 @@ class Logout extends React.Component<IProps, {}> {
 
     componentDidMount() {
         this.props.logout();
+        this.props.resetBurgerBuilderState();
         this.props.history.replace(Constants.URL.LANDING_PAGE);
     }
 
@@ -26,7 +29,8 @@ class Logout extends React.Component<IProps, {}> {
 
 const mapDispatchToProps = (dispatch): IDispatchProps => {
     return {
-        logout: () => dispatch(AuthActions.logout())
+        logout: () => dispatch(AuthActions.logout()),
+        resetBurgerBuilderState: () => dispatch(OrderActions.resetBurgerBuilderState())
     }
 }
 

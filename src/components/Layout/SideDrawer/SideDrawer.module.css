@@ -7,10 +7,17 @@
     transition: transform 0.4s ease-out;
 }
 
+.LogoContainer {
+    background-color: #8F5c2C;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    margin-bottom: 20px;
+}
+
 .Logo {
     height: 60px;
     width: 80px;
-    margin: 20px auto;
+    margin: auto;
 }
 
 .Open {

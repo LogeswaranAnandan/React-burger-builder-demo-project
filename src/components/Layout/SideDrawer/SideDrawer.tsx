@@ -19,10 +19,12 @@ const SideDrawer = (props: IProps) => {
 
     return (
         <Auxiliary>
-            <Backdrop show={props.show} closeBackdropHandler={props.closeSideDrawerHandler}/>
-            <div className={sideDrawerClasses.join(' ')}>
-                <div className={classes.Logo}>
-                    <Logo />
+            <Backdrop show={props.show} closeBackdropHandler={props.closeSideDrawerHandler} />
+            <div className={sideDrawerClasses.join(' ')} onClick={props.closeSideDrawerHandler}>
+                <div className={classes.LogoContainer}>
+                    <div className={classes.Logo}>
+                        <Logo />
+                    </div>
                 </div>
                 <nav>
                     <NavItems />

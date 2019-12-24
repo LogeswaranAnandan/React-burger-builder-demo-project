@@ -25,12 +25,11 @@ const burgerBuilderReducer = (prevState = initialState, action: ActionType) => {
             return removeIngredientHandler(clonedPrevState, action.payload);
         case ActionTypes.INIT_INGREDIENTS:
             return initIngredientHandler(clonedPrevState, action.payload)
-        case ActionTypes.PLACE_ORDER_SUCCESS:
-            return placeOrderSuccess(clonedPrevState);
+        case ActionTypes.RESET_BURGER_BUILDER_STATE:
+            return resetBurgerBuilderState(clonedPrevState);
         default:
             return prevState;
     }
-
 }
 
 const addIngredientHandler = (updatedState: IReduxBurgerBuilderState, { ingredientName }) => {
@@ -60,7 +59,7 @@ const initIngredientHandler = (updatedState: IReduxBurgerBuilderState, { ingredi
     return updatedState;
 }
 
-const placeOrderSuccess = (updatedState: IReduxBurgerBuilderState) => {
+const resetBurgerBuilderState = (updatedState: IReduxBurgerBuilderState) => {
     for (let key in updatedState.ingredients) {
         updatedState.ingredients[key] = 0;
         updatedState.isRemovableIngredient[key] = false;

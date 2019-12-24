@@ -4,15 +4,21 @@ import { IReduxState } from "../../models/Interface";
 import { connect } from "react-redux";
 import OrderActions from "../../redux/action-creators/OrderActions";
 
-interface IProps {
-    orders: any[],
-    fetchOrders: () => void
+interface IMappedProps {
+    userId: string,
+    orders: any[]
+}
+
+interface IDispatchProps {
+    fetchOrders: (userId) => void
+}
+interface IProps extends IMappedProps, IDispatchProps {
 }
 
 class Orders extends Component<IProps, {}> {
 
     async componentDidMount() {
-        this.props.fetchOrders();
+        this.props.fetchOrders(this.props.userId);
     }
 
     render() {
@@ -33,13 +39,16 @@ class Orders extends Component<IProps, {}> {
     }
 }
 
-const mapStateToProps = (reduxState: IReduxState) => {
-    return reduxState.ordersState
+const mapStateToProps = (reduxState: IReduxState): IMappedProps => {
+    return {
+        userId: reduxState.authState.userId,
+        orders: reduxState.ordersState.orders
+    }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch): IDispatchProps => {
     return {
-        fetchOrders: () => dispatch(OrderActions.fetchOrdersAsync())
+        fetchOrders: (userId) => dispatch(OrderActions.fetchOrdersAsync(userId))
     }
 }
 

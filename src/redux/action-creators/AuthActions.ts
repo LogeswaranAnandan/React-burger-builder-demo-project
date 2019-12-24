@@ -40,11 +40,12 @@ export default class AuthActions {
 
     public static onLoadTokenCheck = () => {
 
-        const updateStateWithAuthInfoOnLoadAction = (authToken): ActionType => {
+        const updateStateWithAuthInfoOnLoadAction = (authToken, userId): ActionType => {
             return {
                 type: ActionTypes.UPDATE_STATE_WITH_AUTH_INFO_ON_LOAD,
                 payload: {
-                    authToken: authToken
+                    authToken: authToken,
+                    userId: userId
                 }
             }
         }
@@ -53,12 +54,13 @@ export default class AuthActions {
             let currentAuthToken = TokenUtil.fetchTokenFromLocalStorage();
             const { expirationTime, issuedAt } = TokenUtil.fetchExpirationTimeFromLocalStorage();
             if (currentAuthToken != null && expirationTime != null && issuedAt != null) {
+                const userId = TokenUtil.fetchUserIdFromLocalStorage();
                 const timeDifferenceInMilliSeconds = new Date().getTime() - issuedAt.getTime();
                 if (timeDifferenceInMilliSeconds < expirationTime) {
                     setTimeout(() => {
                         dispatch(AuthActions.logout());
                     }, expirationTime - timeDifferenceInMilliSeconds);
-                    dispatch(updateStateWithAuthInfoOnLoadAction(currentAuthToken));
+                    dispatch(updateStateWithAuthInfoOnLoadAction(currentAuthToken, userId));
                 } else {
                     dispatch(AuthActions.logout());
                 }

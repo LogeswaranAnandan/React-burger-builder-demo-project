@@ -10,6 +10,7 @@ import { connect } from 'react-redux';
 import AuthContext from '../../context/auth-context';
 import Logout from '../Auth/Logout/Logout';
 import Constants from '../../constants/constants';
+import Spinner from '../UI/Spinner/Spinner';
 
 interface IProps {
     isAuthenticated: boolean
@@ -60,11 +61,11 @@ class Layout extends Component<IProps, IState> {
 
         return (
             <Auxiliary>
-                <AuthContext.Provider value={{isAuthenticated: this.props.isAuthenticated}}>
+                <AuthContext.Provider value={{ isAuthenticated: this.props.isAuthenticated }}>
                     <SideDrawer show={this.state.showSideDrawer} closeSideDrawerHandler={this.closeSideDrawerHandler} />
                     <Navbar toggleNavbarHandler={this.toggleNavbarHandler} />
                     <div className={classes.PageContainer}>
-                        <Suspense fallback={<div>Some problem occurred in the backend. Please try again later!!!</div>}>
+                        <Suspense fallback={<Spinner showSpinnerAsFallback={true} />}>
                             {routes}
                         </Suspense>
                     </div>
