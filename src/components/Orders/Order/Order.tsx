@@ -1,41 +1,40 @@
 import React from 'react';
 import classes from './Order.module.css';
 import { Ingredients } from '../../../models/Interface';
+import OrderModel from '../../../models/Order';
+import TransformIngredients from '../../../util/transform-ingredients';
 
 interface IProps {
     ingredients: Ingredients,
-    price: number
+    price: number,
+    orderDetails: OrderModel,
+    clickHandler(order: OrderModel): void
 }
 
 const Order = (props: IProps) => {
 
     let ingredients = [];
+    const transformedIngredients = TransformIngredients(props.ingredients);
 
-    for ( let ingredientName in props.ingredients ) {
+    for ( let ingredientName in transformedIngredients ) {
         ingredients.push(
             {
                 name: ingredientName,
-                amount: props.ingredients[ingredientName]
+                amount: transformedIngredients[ingredientName]
             }
         );
     }
 
     const ingredientOutput = ingredients.map(ig => {
         return <span 
-            style={{
-                textTransform: 'capitalize',
-                display: 'inline-block',
-                margin: '0 8px',
-                border: '1px solid #ccc',
-                padding: '5px'
-                }}
+            className={classes.Ingredients}
             key={ig.name}>{ig.name} ({ig.amount})</span>;
     });
 
     return (
-        <div className={classes.Order}>
-            <p>Ingredients: {ingredientOutput}</p>
-            <p>Price: <strong>USD {Number(props.price).toFixed(2)}</strong></p>
+        <div className={classes.Order} onClick={() => props.clickHandler(props.orderDetails)}>
+            <p><span className={classes.IngredientsLabel}>Ingredients:</span> {ingredientOutput}</p>
+            <p>Price: <strong>INR {Number(props.price).toFixed(2)}</strong></p>
         </div>
     );
 }

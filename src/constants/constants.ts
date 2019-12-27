@@ -3,6 +3,7 @@ export default class Constants {
     public static BACKEND_BASE_URL = 'https://burger-builder-3e20f.firebaseio.com/';
     public static SPINNER_EVENT_NAME = 'Spinner';
     public static AUTH_TOKEN_KEY = 'AUTH_TOKEN_KEY';
+    public static AUTH_USER_ID = 'AUTH_USER_ID';
     public static AUTH_TOKEN_EXPIRATION_KEY = 'AUTH_TOKEN_EXPIRATION_KEY';
     public static AUTH_TOKEN_ISSUED_DATETIME = 'AUTH_TOKEN_ISSUED_DATETIME';
 
@@ -25,7 +26,7 @@ export default class Constants {
         meat: 20
     }
 
-    public static GET_ORDERS_URL = '/Orders.json';
+    public static GET_ORDERS_URL = 'Orders.json';
 
 
     public static INPUT_TYPE = {

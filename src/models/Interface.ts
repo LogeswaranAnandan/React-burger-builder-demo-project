@@ -30,6 +30,7 @@ export interface IReduxOrdersState {
 
 export interface IReduxAuthState {
     isAuthenticated: boolean,
+    userId: string,
     authToken: string,
     redirectPath: string
 }

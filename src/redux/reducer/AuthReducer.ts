@@ -6,6 +6,7 @@ import TokenUtil from "../../util/token-util";
 
 const initialState: IReduxAuthState = {
     isAuthenticated: false,
+    userId: null,
     authToken: null,
     redirectPath: Constants.URL.LANDING_PAGE
 };
@@ -26,33 +27,39 @@ const authReducer = (prevState: IReduxAuthState = initialState, action: ActionTy
 const loginSuccess = (prevState: IReduxAuthState, payload: any) => {
     TokenUtil.storeTokenToLocalStorage(payload.idToken);
     TokenUtil.storeExpirationTimeToLocalStorage(payload.expiresIn);
+    TokenUtil.storeUserIdToLocalStorage(payload.localId);
     return updateObject(prevState, {
         isAuthenticated: true,
-        authToken: payload.idToken
-    });
+        authToken: payload.idToken,
+        userId: payload.localId
+    } as IReduxAuthState);
 }
 
 const signupSuccess = (prevState: IReduxAuthState, payload: any) => {
     TokenUtil.storeTokenToLocalStorage(payload.idToken);
     TokenUtil.storeExpirationTimeToLocalStorage(payload.expiresIn);
+    TokenUtil.storeUserIdToLocalStorage(payload.localId);
     return updateObject(prevState, {
         isAuthenticated: true,
-        authToken: payload.idToken
-    });
+        authToken: payload.idToken,
+        userId: payload.localId
+    } as IReduxAuthState);
 }
 
 const logout = (prevState: IReduxAuthState, payload: any) => {
     TokenUtil.clearTokenFromLocalStorage();
     return updateObject(prevState, {
         isAuthenticated: false,
-        authToken: null
-    });
+        authToken: null,
+        userId: null
+    } as IReduxAuthState);
 }
 
 const updateStateWithAuthInfoOnLoad = (prevState: IReduxAuthState, payload: any) => {
     return updateObject(prevState, {
         isAuthenticated: true,
-        authToken: payload.authToken
+        authToken: payload.authToken,
+        userId: payload.userId
     })
 }
 

@@ -6,3 +6,25 @@
     margin: 10px auto;
     box-sizing: border-box;
 }
+
+.Order:hover {
+    cursor: pointer;
+}
+
+.Ingredients {
+    text-transform: capitalize;
+    display: inline-block;
+    margin: 3px 8px;
+    border: 1px solid #ccc;
+    padding: 5px;
+}
+
+@media only screen and (max-width: 500px) {
+    .IngredientsLabel {
+        display: block;
+    }
+
+    .Ingredients {
+        margin-left: 0px;
+    }
+}

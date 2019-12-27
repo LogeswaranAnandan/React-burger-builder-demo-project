@@ -1,3 +1,7 @@
 .PageContainer {
     margin-top: 20px;
 }
+
+.SideDrawerContainer {
+    background-color: #eee;
+}

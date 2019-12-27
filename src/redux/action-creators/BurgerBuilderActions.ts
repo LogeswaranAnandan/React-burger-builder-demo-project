@@ -1,6 +1,7 @@
 import ActionTypes from "../../constants/ActionTypes";
 import HttpUtilService, { RequestMethods } from "../../core/HttpUtil/HttpUtilService";
 import { Ingredients } from "../../models/Interface";
+import TransformIngredients from "../../util/transform-ingredients";
 
 export default class BurgerBuilderAction {
     public static addIngredient = (ingredientName: string) => {
@@ -26,15 +27,7 @@ export default class BurgerBuilderAction {
             try {
                 const ingredients = await HttpUtilService.makeRequest('/Ingredients.json', RequestMethods.GET);
                 // To get the response in the order of salad, bacon, cheese and meat. So that the UI looks nice.
-                const finalIngredients: Ingredients = {
-                    salad: null,
-                    bacon: null,
-                    cheese: null,
-                    meat: null
-                }
-                Object.keys(ingredients).forEach((key) => {
-                    finalIngredients[key] = ingredients[key];
-                });
+                const finalIngredients: Ingredients = TransformIngredients(ingredients);
                 dispatch(BurgerBuilderAction.initIngredients(finalIngredients));
             } catch (err) {
                 console.log('ERR_INIT_INGREDIENTS', err);

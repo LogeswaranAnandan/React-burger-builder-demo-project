@@ -161,7 +161,8 @@ class Auth extends Component<IProps, IState> {
 
         if (this.state.formMode === 'Login') {
             try {
-                const response = await HttpUtilService.makeRequestToExternalUrl(UrlConstants.LOGIN_URL, RequestMethods.POST, formInfo);
+                const url = UrlConstants.LOGIN_URL + process.env.REACT_APP_FIREBASE_API_KEY;
+                const response = await HttpUtilService.makeRequestToExternalUrl(url, RequestMethods.POST, formInfo);
                 this.props.onLoginSuccess(response);
                 const redirectPath = this.props.redirectPath;
                 this.props.clearRedirectPath();
@@ -171,7 +172,8 @@ class Auth extends Component<IProps, IState> {
             }
         } else {
             try {
-                const response = await HttpUtilService.makeRequestToExternalUrl(UrlConstants.SIGNUP_URL, RequestMethods.POST, formInfo);
+                const url = UrlConstants.SIGNUP_URL + process.env.REACT_APP_FIREBASE_API_KEY;
+                const response = await HttpUtilService.makeRequestToExternalUrl(url, RequestMethods.POST, formInfo);
                 this.props.onSignupSuccess(response);
                 const redirectPath = this.props.redirectPath;
                 this.props.clearRedirectPath();

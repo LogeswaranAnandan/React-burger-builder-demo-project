@@ -6,20 +6,24 @@ import Button from '../../../components/UI/Button/Button';
 import ButtonClasses from '../../../components/UI/Button/Button.module.css';
 import Constants from '../../../constants/constants';
 import Input from '../../../components/UI/Input/Input';
-import { connect, DispatchProp } from 'react-redux';
+import { connect } from 'react-redux';
 import OrderActions from '../../../redux/action-creators/OrderActions';
 import updateObject from '../../../util/update-object';
 import checkFieldValidity from '../../../util/check-validity';
 
 interface IMappedProps {
     ingredients: Ingredients,
-    price: number
+    price: number,
+    userId: string
 }
 
-interface IProps extends IMappedProps, RouterProps, DispatchProp {
+interface IDispatchedProps {
+    onOrderSubmit?: (orderData: any, history: any) => void
+}
+
+interface IProps extends IMappedProps, IDispatchedProps, RouterProps {
     ingredients: Ingredients,
-    price: number,
-    onOrderSubmit?: (orderData, history) => void
+    price: number
 }
 
 interface IState {
@@ -36,6 +40,8 @@ interface IState {
 
 class ContactData extends Component<IProps, IState> {
 
+    // The constructor is added to wrap the component using WithRouter component to receive the routing props
+    // eslint-disable-next-line
     constructor(props) {
         super(props);
     }
@@ -197,7 +203,8 @@ class ContactData extends Component<IProps, IState> {
         const requestBody = {
             ingredients: this.props.ingredients,
             price: this.props.price,
-            contactInfo: contactInfo
+            contactInfo: contactInfo,
+            userId: this.props.userId
         }
 
         this.props.onOrderSubmit(requestBody, this.props.history);
@@ -242,11 +249,12 @@ class ContactData extends Component<IProps, IState> {
 const mapStateToProps = (reduxState: IReduxState): IMappedProps => {
     return {
         ingredients: reduxState.burgerBuilderState.ingredients,
-        price: reduxState.burgerBuilderState.burgerPrice
+        price: reduxState.burgerBuilderState.burgerPrice,
+        userId: reduxState.authState.userId
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = (dispatch): IDispatchedProps => {
     return {
         onOrderSubmit: (orderData, routeHistory) => dispatch(OrderActions.placeOrderAsync(orderData, routeHistory))
     }

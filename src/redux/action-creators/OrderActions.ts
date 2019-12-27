@@ -4,9 +4,9 @@ import Constants from "../../constants/constants";
 import { ActionType } from "../../models/Interface";
 
 export default class OrderActions {
-    private static placeOrderSuccess = (orderResponse) => {
+    public static resetBurgerBuilderState = () => {
         return {
-            type: ActionTypes.PLACE_ORDER_SUCCESS
+            type: ActionTypes.RESET_BURGER_BUILDER_STATE
         }
     }
 
@@ -22,8 +22,8 @@ export default class OrderActions {
     public static placeOrderAsync = (requestBody: any, routeHistory: any) => {
         return async (dispatch) => {
             try {
-                const orderResponse = await HttpUtilService.makeRequest('/Orders.json', RequestMethods.POST, requestBody);
-                dispatch(OrderActions.placeOrderSuccess(orderResponse));
+                await HttpUtilService.makeRequest(Constants.GET_ORDERS_URL, RequestMethods.POST, requestBody);
+                dispatch(OrderActions.resetBurgerBuilderState());
                 routeHistory.push(Constants.URL.LANDING_PAGE);
             } catch (err) {
                 console.log('ERR: PLACE_ORDER', err);
@@ -31,11 +31,12 @@ export default class OrderActions {
         }
     }
 
-    public static fetchOrdersAsync = () => {
+    public static fetchOrdersAsync = (userId: string) => {
         return async (dispatch) => {
             try {
                 let orders = [];
-                const unstructuredOrders = await HttpUtilService.makeRequest(Constants.GET_ORDERS_URL, RequestMethods.GET)
+                const url = Constants.GET_ORDERS_URL + '?orderBy="userId"&equalTo="' + userId + '"';
+                const unstructuredOrders = await HttpUtilService.makeRequest(url, RequestMethods.GET)
                 for (let key in unstructuredOrders) {
                     orders.push({ ...unstructuredOrders[key], id: key });
                 }

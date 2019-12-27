@@ -58,7 +58,7 @@ class BurgerBuilder extends Component<IProps, IBurgerBuilderState> {
 
 
     render() {
-        let renderContent = <div>Some problem occurred while fetching ingredients!!! Please try again later.</div>;
+        let renderContent = null;
         if (this.props.ingredients) {
             renderContent = (
                 <Auxiliary>
