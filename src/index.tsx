@@ -10,8 +10,10 @@ import orderReducer from './redux/reducer/OrderReducer'
 import authReducer from './redux/reducer/AuthReducer';
 import thunk from 'redux-thunk';
 
-
-const composeEnhancers = window['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] as typeof compose || compose;
+let composeEnhancers = compose;
+if (process.env.NODE_ENV === 'development') {
+    composeEnhancers = window['__REDUX_DEVTOOLS_EXTENSION_COMPOSE__'] as typeof compose || compose;
+}
 
 const rootReducer = combineReducers({
     burgerBuilderState: burgerBuilderReducer,
