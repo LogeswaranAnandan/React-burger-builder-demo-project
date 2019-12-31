@@ -50,7 +50,6 @@ class Orders extends Component<IProps, IState> {
 
     render() {
         let renderComponent = null;
-        console.log('orders', this.props.orders, this.props.orders.length === 0);
         if (this.props.orders.length > 0) {
             if (this.state.selectedOrder) {
                 renderComponent = (
