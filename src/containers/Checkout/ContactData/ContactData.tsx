@@ -14,11 +14,12 @@ import checkFieldValidity from '../../../util/check-validity';
 interface IMappedProps {
     ingredients: Ingredients,
     price: number,
-    userId: string
+    userId: string,
+    authToken: string
 }
 
 interface IDispatchedProps {
-    onOrderSubmit?: (orderData: any, history: any) => void
+    onOrderSubmit?: (orderData: any, authToken: string, history: any) => void
 }
 
 interface IProps extends IMappedProps, IDispatchedProps, RouterProps {
@@ -207,7 +208,7 @@ class ContactData extends Component<IProps, IState> {
             userId: this.props.userId
         }
 
-        this.props.onOrderSubmit(requestBody, this.props.history);
+        this.props.onOrderSubmit(requestBody, this.props.authToken, this.props.history);
     }
 
     render() {
@@ -250,13 +251,14 @@ const mapStateToProps = (reduxState: IReduxState): IMappedProps => {
     return {
         ingredients: reduxState.burgerBuilderState.ingredients,
         price: reduxState.burgerBuilderState.burgerPrice,
-        userId: reduxState.authState.userId
+        userId: reduxState.authState.userId,
+        authToken: reduxState.authState.authToken
     }
 }
 
 const mapDispatchToProps = (dispatch): IDispatchedProps => {
     return {
-        onOrderSubmit: (orderData, routeHistory) => dispatch(OrderActions.placeOrderAsync(orderData, routeHistory))
+        onOrderSubmit: (orderData, authToken, routeHistory) => dispatch(OrderActions.placeOrderAsync(orderData, authToken, routeHistory))
     }
 }
 

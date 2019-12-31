@@ -6,14 +6,16 @@ import OrderActions from "../../redux/action-creators/OrderActions";
 import OrderModel from "../../models/Order";
 import updateObject from "../../util/update-object";
 import OrderDetails from "../../components/Orders/OrderDetails/OrderDetails";
+import classes from './Orders.module.css';
 
 interface IMappedProps {
     userId: string,
+    authToken: string,
     orders: any[]
 }
 
 interface IDispatchProps {
-    fetchOrders: (userId) => void
+    fetchOrders: (userId, authToken) => void
 }
 interface IProps extends IMappedProps, IDispatchProps {
 }
@@ -29,7 +31,7 @@ class Orders extends Component<IProps, IState> {
     }
 
     async componentDidMount() {
-        this.props.fetchOrders(this.props.userId);
+        this.props.fetchOrders(this.props.userId, this.props.authToken);
     }
 
     showOrderDetailsComponent = (order: OrderModel) => {
@@ -48,25 +50,39 @@ class Orders extends Component<IProps, IState> {
 
     render() {
         let renderComponent = null;
-        if (this.state.selectedOrder) {
-            renderComponent = (
-                <OrderDetails
-                    order={this.state.selectedOrder}
-                    backBtnHandler={this.hideOrderDetailsComponent}
-                />
-            );
-        } else {
-            renderComponent = this.props.orders.map((order) => {
-                return (
-                    <Order
-                        key={order.id}
-                        ingredients={order.ingredients}
-                        price={order.price}
-                        orderDetails={order}
-                        clickHandler={this.showOrderDetailsComponent}
+        console.log('orders', this.props.orders, this.props.orders.length === 0);
+        if (this.props.orders.length > 0) {
+            if (this.state.selectedOrder) {
+                renderComponent = (
+                    <OrderDetails
+                        order={this.state.selectedOrder}
+                        backBtnHandler={this.hideOrderDetailsComponent}
                     />
-                )
-            })
+                );
+            } else {
+                const orderArray = this.props.orders.map((order) => {
+                    return (
+                        <Order
+                            key={order.id}
+                            ingredients={order.ingredients}
+                            price={order.price}
+                            orderDetails={order}
+                            clickHandler={this.showOrderDetailsComponent}
+                        />
+                    )
+                });
+                renderComponent = [];
+                // Sorting the orders to display the latest order at top
+                for(let i=orderArray.length - 1; i >= 0; i--) {
+                    renderComponent.push(orderArray[i]);
+                }
+            }
+        } else {
+            renderComponent = (
+                <div className={classes.ErrorMsgContainer}>
+                    The list is currently empty. Please place an order to view them here!!!
+                </div>
+            )
         }
         return (
             <div>
@@ -79,13 +95,14 @@ class Orders extends Component<IProps, IState> {
 const mapStateToProps = (reduxState: IReduxState): IMappedProps => {
     return {
         userId: reduxState.authState.userId,
+        authToken: reduxState.authState.authToken,
         orders: reduxState.ordersState.orders
     }
 }
 
 const mapDispatchToProps = (dispatch): IDispatchProps => {
     return {
-        fetchOrders: (userId) => dispatch(OrderActions.fetchOrdersAsync(userId))
+        fetchOrders: (userId, authToken) => dispatch(OrderActions.fetchOrdersAsync(userId, authToken))
     }
 }
 

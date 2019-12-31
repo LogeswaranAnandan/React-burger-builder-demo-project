@@ -6,6 +6,8 @@ import Spinner from './containers/UI/Spinner/Spinner';
 import { BrowserRouter } from 'react-router-dom';
 import AuthActions from './redux/action-creators/AuthActions';
 import { connect } from 'react-redux';
+import { toast, Slide } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 interface IProps {
   onLoadAuthTokenCheck: () => void
@@ -13,6 +15,14 @@ interface IProps {
 
 const App = (props: IProps) => {
   props.onLoadAuthTokenCheck();
+
+  toast.configure({
+    newestOnTop: true,
+    hideProgressBar: true,
+    pauseOnFocusLoss: false,
+    transition: Slide
+  });
+
   return (
     <Auxiliary>
       <BrowserRouter>

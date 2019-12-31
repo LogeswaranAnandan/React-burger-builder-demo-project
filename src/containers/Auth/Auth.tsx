@@ -13,6 +13,9 @@ import UrlConstants from '../../constants/url-constants';
 import AuthActions from '../../redux/action-creators/AuthActions';
 import { connect } from 'react-redux';
 import { RouteComponentProps } from 'react-router-dom';
+import ToastService from '../../core/Toast/ToastService';
+import { ToastType } from '../../models/enum';
+import MessageConstants from '../../constants/MessageConstants';
 
 interface IProps extends RouteComponentProps {
     isAuthenticated: boolean,
@@ -169,17 +172,20 @@ class Auth extends Component<IProps, IState> {
                 this.props.history.replace(redirectPath);
             } catch (err) {
                 console.log('ERR_LOGIN', err);
+                ToastService.createToast(ToastType.ERROR, MessageConstants.ERROR_MSG.ERR_LOGIN);
             }
         } else {
             try {
                 const url = UrlConstants.SIGNUP_URL + process.env.REACT_APP_FIREBASE_API_KEY;
                 const response = await HttpUtilService.makeRequestToExternalUrl(url, RequestMethods.POST, formInfo);
+                ToastService.createToast(ToastType.SUCCESS, MessageConstants.SUCCESS_MSG.SIGNUP);
                 this.props.onSignupSuccess(response);
                 const redirectPath = this.props.redirectPath;
                 this.props.clearRedirectPath();
                 this.props.history.replace(redirectPath);
             } catch (err) {
                 console.log('ERR_SIGNUP', err);
+                ToastService.createToast(ToastType.ERROR, MessageConstants.ERROR_MSG.ERR_SIGNUP);
             }
         }
     }

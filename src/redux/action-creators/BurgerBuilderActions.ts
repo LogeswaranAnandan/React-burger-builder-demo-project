@@ -2,6 +2,9 @@ import ActionTypes from "../../constants/ActionTypes";
 import HttpUtilService, { RequestMethods } from "../../core/HttpUtil/HttpUtilService";
 import { Ingredients } from "../../models/Interface";
 import TransformIngredients from "../../util/transform-ingredients";
+import ToastService from '../../core/Toast/ToastService';
+import { ToastType } from '../../models/enum';
+import MessageConstants from '../../constants/MessageConstants';
 
 export default class BurgerBuilderAction {
     public static addIngredient = (ingredientName: string) => {
@@ -31,6 +34,7 @@ export default class BurgerBuilderAction {
                 dispatch(BurgerBuilderAction.initIngredients(finalIngredients));
             } catch (err) {
                 console.log('ERR_INIT_INGREDIENTS', err);
+                ToastService.createToast(ToastType.ERROR, MessageConstants.ERROR_MSG.ERR_FETCH_INGREDIENTS);
             }
         }
     }
