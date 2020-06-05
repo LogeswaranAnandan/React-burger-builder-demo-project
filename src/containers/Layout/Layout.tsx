@@ -19,7 +19,8 @@ interface IState {
     showSideDrawer: boolean
 }
 
-const BurgerBuilder = React.lazy(() => import('../BurgerBuilder/BurgerBuilder'));
+// const BurgerBuilder = React.lazy(() => import('../BurgerBuilder/BurgerBuilder'));
+const BurgerBuilder = React.lazy(() => import('../../functional-container/burger-builder'));
 const Checkout = React.lazy(() => import('../Checkout/Checkout'));
 const Orders = React.lazy(() => import('../Orders/Orders'));
 
